@@ -15,13 +15,13 @@ class Config:
     # MAILER
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
-    MAIL_USERNAME = 'walidhadjiali11@gmail.com'
-    MAIL_PASSWORD = 'zysbwlbnshjyufcf'
+    MAIL_USERNAME = ''
+    MAIL_PASSWORD = ''
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
 
-    STRIPE_PUBLIC_KEY = 'pk_test_51OZvf6Jg6QAmygp5ArPJI68x9sYNxas8Q0aUAU1LfJ7N34xW7TUjWoSojRzv0lx883mmGOwPQTVPWczDOYmuRl8900CdTOZHmV'
-    STRIPE_SECRET_KEY = 'sk_test_51OZvf6Jg6QAmygp5NEaOxOAFVvrzkSq8mb6FTpNABhKvQBvFmjznZ5JU7OhF6ie6cPXOG3kNrsyztbqUO3bZO8Wh00PhuFQyfB'
+    STRIPE_PUBLIC_KEY = ''
+    STRIPE_SECRET_KEY = ''
 
 
     @property
@@ -30,7 +30,7 @@ class Config:
 
     @property
     def SECRET_KEY(self):
-        return 'dvjgth34tiugnvgoi'
+        return ''
     
     @property
     def SESSION_PERMANENT(self):
