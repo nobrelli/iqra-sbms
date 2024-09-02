@@ -1,9 +1,9 @@
 {% macro eval_year_lvl(year) %}
-    {%- if year == 1 -%}1st
-    {%- elif year == 2 -%}2nd
-    {%- elif year == 3 -%}3rd
-    {%- elif year == 4 -%}4th
-    {%- elif year == 5 -%}5th
+    {%- if year == 1 -%}Freshman
+    {%- elif year == 2 -%}Sophomore
+    {%- elif year == 3 -%}Junior
+    {%- elif year == 4 -%}Senior
+    {%- elif year == 5 -%}Terminal
     {%- else -%}Irregular
     {%- endif -%}
 {% endmacro %}

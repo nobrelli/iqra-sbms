@@ -21,10 +21,11 @@ from wtforms.validators import (
 )
 
 year_lvl = (
-    (1, '1st Year'),
-    (2, '2nd Year'),
-    (3, '3rd Year'),
-    (4, '4th Year'),
+    (1, 'Freshman'),
+    (2, 'Sophomore'),
+    (3, 'Junior'),
+    (4, 'Senior'),
+    (5, 'Terminal'),
 )
 
 semesters = (
