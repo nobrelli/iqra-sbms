@@ -37,7 +37,7 @@ def build_app():
     db.init_app(app)
     migrate.init_app(app, db)
     session.init_app(app)
-    mail.init_app(app)
+    # mail.init_app(app)
 
     # Init payment gateway
     stripe.api_key = config.STRIPE_SECRET_KEY

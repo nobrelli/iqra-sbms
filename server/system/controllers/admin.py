@@ -438,7 +438,6 @@ def add_student():
         student_id=form.student_id.data,
         password=new_password
     )
-    mail.send(message)
     
     new_student = Student(
         entry_date=datetime.now(),
