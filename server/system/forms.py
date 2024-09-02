@@ -65,12 +65,12 @@ class AddStudentForm(FlaskForm):
     year = SelectField('Year', validators=[DataRequired()], choices=year_lvl)
     lastname = StringField('Last name', validators=[DataRequired()])
     firstname = StringField('First name', validators=[DataRequired()])
-    middlename = StringField('Middle name', validators=[DataRequired()])
+    middlename = StringField('Middle name')
     gender = SelectField('Gender', validators=[DataRequired()], choices=(('M', 'Male'), ('F', 'Female')))
     birthdate = DateField('Birthdate', validators=[DataRequired()])
     address = StringField('Address', validators=[DataRequired()])
     phone = StringField('Phone', validators=[DataRequired(), Regexp(phone_regex, message='Invalid phone number format.')])
-    email = EmailField('Email', validators=[DataRequired()])
+    email = EmailField('Email')
     submit = SubmitField('Submit')
 
 
