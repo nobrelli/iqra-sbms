@@ -1,0 +1,89 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+{% from 'components/utils.html' import eval_year_lvl, eval_semester %}
+
+{% import 'components/icons/edit.html' as edit_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+{% import 'components/icons/add.html' as add_icon %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+    {{ program.code }} - {{ program.description }}
+{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="admin-panel">
+    {{ sidebar('catalog') }}
+    <div id="admin-main">
+        <h1>
+            {{ program.code }}
+            <span>{{ program.description }}</span>
+        </h1>
+        <div id="admin-main-contents">
+            <div class="data-tables">
+              <div class="data-table-wrapper">
+                <div id="action-buttons">
+                  <div class="data-table-badge ok large" style="width: auto">A.Y. {{ semester.year_start }} - {{ semester.year_end }} ({{ eval_semester(semester.semester) }} SEMESTER)</div>
+                </div>
+                <h2>Program of Study</h2>
+                <div class="control-buttons" style="margin-bottom: 10px;">
+                  <a href="#" class="regular-btn modal-trigger" data-target="add-subject-modal">{{ add_icon }} Add subject</a>
+                </div>
+                {% if program.subjects|count == 0 %}
+                  <p>No subjects yet.</p>
+                {% else %}
+                  <table class="data-table" id="subjects" style="display: block;">
+                      <thead>
+                          <th>Code</th>
+                          <th>Description</th>
+                          <th>Units</th>
+                          <th>Prerequisite</th>
+                          <th>Year Level</th>
+                          <th>Semester</th>
+                          <th>Actions</th>
+                      </thead>
+                      <tbody>
+                          {% for subject in program_subjects %}
+                              <tr>
+                                  <td>{{ subject.code }}</td>
+                                  <td>{{ subject.description }}</td>
+                                  <td>{{ subject.units }}</td>
+                                  <td>{{ subject.prereq or 'None' }}</td>
+                                  <td>{{ eval_year_lvl(subject.year) }}</td>
+                                  <td>{{ eval_semester(subject.semester) }}</td>
+                                  <td>
+                                    <div>
+                                      <a href="#" class="modal-trigger" data-target="edit-subject-modal" data-entry="{{ program.id }},{{ subject.code }}">
+                                        {{ edit_icon }}
+                                      </a>
+                                      <a href="#" class="modal-trigger" data-target="delete-subject-modal" data-entry="{{ program.id }},{{ subject.code }}">
+                                        {{ delete_icon }}
+                                      </a>
+                                    </div>
+                                </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  {{ form_modal('Add subject', 'add-subject-modal', program_subject_form) }}
+  {{ form_modal('Edit subject', 'edit-subject-modal', program_subject_form) }}
+  {{ confirm_modal('Confirm', 'delete-subject-modal', 'Are you sure to delete this subject?') }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin/program.js') }}"></script>
+{% endblock %}

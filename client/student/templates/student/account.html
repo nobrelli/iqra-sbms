@@ -1,0 +1,58 @@
+{% from 'components/student_sidebar.html' import sidebar %}
+{% import 'components/icons/message.html' as message_icon %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Account
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+<div id="student-panel">
+  {{ sidebar('account') }}
+  <div id="student-main">
+    <div class="dashboard-header">
+      <h1>Account</h1>
+      <a href="{{ url_for('student.inbox') }}" class="dashboard-inbox-button">
+        {{ message_icon }}
+        {% if message_count != 0 %}
+        <span class="dashboard-inbox-badge">{{ message_count }}</span>
+        {% endif %}
+      </a>
+    </div>
+    <div id="student-main-contents">
+      <div>
+        <h2>Password</h2>
+        <form action="{{ url_for('student.proc_change_password') }}" method="post" autocomplete="off"
+          id="change-password-form" class="form">
+          <p class="form-message"></p>
+          {{ form.csrf_token }}
+          <div>
+            {{ form.current_password.label(class='form-label') }}
+            {{ form.current_password(class='form-input') }}
+          </div>
+          <div>
+            {{ form.new_password.label(class='form-label') }}
+            {{ form.new_password(class='form-input') }}
+          </div>
+          <div>
+            {{ form.confirm_password.label(class='form-label') }}
+            {{ form.confirm_password(class='form-input') }}
+          </div>
+          <div>
+            {{ form.submit(class='form-button', style='width: max-content') }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/admin/change_password.js') }}"></script>
+{% endblock %}

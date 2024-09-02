@@ -1,0 +1,155 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+
+{% import 'components/icons/edit.html' as edit_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+{% import 'components/icons/add.html' as add_icon %}
+
+{% from 'components/utils.html' import eval_semester %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="admin-panel">
+    {{ sidebar('catalog') }}
+    <div id="admin-main">
+      <h1>Catalog</h1>
+      <div id="admin-main-contents">
+        <div id="action-buttons">
+            <a href="#" class="modal-trigger" data-target="add-semester-modal">{{ add_icon }} Add semester</a>
+            <a href="#" class="modal-trigger" data-target="add-program-modal">{{ add_icon }} Add program</a>
+            <a href="#" class="modal-trigger" data-target="add-subject-modal">{{ add_icon }} Add subject</a>
+        </div>
+        <div class="data-tables">
+          <div class="data-table-wrapper">
+            <h2>Semesters</h2>
+            {% if semesters.count() == 0 %}
+              <p>No semesters yet.</p>
+            {% else %}
+              <table class="data-table" id="semesters">
+                  <thead>
+                      <th>Academic Year</th>
+                      <th>Semester</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </thead>
+                  <tbody>
+                      {% for semester in semesters %}
+                          <tr>
+                              <td>{{ semester.year_start }} - {{ semester.year_end }}</td>
+                              <td>{{ eval_semester(semester.semester) }}</td>
+                              <td>
+                                <span class="data-table-badge 
+                                  {%- if semester.status %} ok
+                                  {%- else %} failed
+                                  {%- endif %}">
+                                  {%- if semester.status %}Open
+                                  {%- else %}Closed
+                                  {%- endif -%}
+                                </span>
+                              </td>
+                              <td>
+                                <a href="#" class="modal-trigger" data-target="delete-semester-modal" data-entry="{{ semester.id }}">
+                                  {{ delete_icon }}
+                                </a>
+                            </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            {% endif %}
+          </div>
+
+          <div class="data-table-wrapper">
+            <h2>Programs</h2>
+            {% if programs.count() == 0 %}
+              <p>No programs yet.</p>
+            {% else %}
+              <table class="data-table" id="programs">
+                  <thead>
+                      <th>Code</th>
+                      <th>Description</th>
+                      <th>Subjects</th>
+                      <th>Actions</th>
+                  </thead>
+                  <tbody>
+                      {% for program in programs %}
+                          <tr>
+                              <td>{{ program.code }}</td>
+                              <td><a href="{{ url_for('admin.get_program', id=program.id) }}">{{ program.description }}</a></td>
+                              <td>{{ program.subjects|count }}</td>
+                              <td>
+                                  <a href="#" class="modal-trigger" data-target="edit-program-modal" data-entry="{{ program.id }}">
+                                    {{ edit_icon }}
+                                  </a>
+                                  <a href="#" class="modal-trigger" data-target="delete-program-modal" data-entry="{{ program.id }}">
+                                    {{ delete_icon }}
+                                  </a>
+                              </td>
+                          </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+            {% endif %}
+          </div>
+
+          <div class="data-table-wrapper">
+            <h2>Subjects</h2>
+            {% if subjects.count() == 0 %}
+              <p>No subjects yet.</p>
+            {% else %}
+              <table class="data-table" id="subjects">
+                <thead>
+                    <th>Code</th>
+                    <th>Description</th>
+                    <th>Programs</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                  {% for subject in subjects %}
+                      <tr>
+                          <td>{{ subject.code }}</td>
+                          <td>{{ subject.description }}</td>
+                          <td>{{ subject.programs|count }}</td>
+                          <td>
+                            <a href="#" class="modal-trigger" data-target="edit-subject-modal" data-entry="{{ subject.id }}">
+                              {{ edit_icon }}
+                            </a>
+                            <a href="#" class="modal-trigger" data-target="delete-subject-modal" data-entry="{{ subject.id }}">
+                              {{ delete_icon }}
+                            </a>
+                          </td>
+                      </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{ form_modal('Add semester', 'add-semester-modal', semester_form) }}
+  {{ form_modal('Add program', 'add-program-modal', program_form) }}
+  {{ form_modal('Add subject', 'add-subject-modal', subject_form) }}
+
+  {{ form_modal('Edit program', 'edit-program-modal', program_form) }}
+  {{ form_modal('Edit subject', 'edit-subject-modal', subject_form) }}
+
+  {{ confirm_modal('Confirm', 'delete-semester-modal', 'Some programs might have subjects under this semester. Are you sure to remove this semester?') }}
+  {{ confirm_modal('Confirm', 'delete-program-modal', 'Are you sure to remove this program and all of its subjects?') }}
+  {{ confirm_modal('Confirm', 'delete-subject-modal', 'Some programs might depend on this subject. Are you sure to remove this subject?') }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin/catalog.js') }}"></script>
+{% endblock %}

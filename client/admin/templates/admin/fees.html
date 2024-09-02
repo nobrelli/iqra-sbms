@@ -1,0 +1,147 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+{% from 'components/slot_modal.html' import slot_modal %}
+
+{% import 'components/icons/add.html' as add_icon %}
+{% import 'components/icons/edit.html' as edit_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+{% import 'components/icons/receipt.html' as receipt_icon %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Fees
+{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="admin-panel">
+    {{ sidebar('fees') }}
+    <div id="admin-main">
+        <h1>Fees</h1>
+        <div id="admin-main-contents">
+            <div class="data-tables">
+              <div class="data-table-wrapper">
+                <div id="action-buttons">
+                  <a href="#" class="modal-trigger" data-target="add-fee-modal" style="width: max-content">{{ add_icon }} Add fee</a>
+                  <!-- <a href="#" class="modal-trigger" data-target="add-bill-modal">{{ receipt_icon }} Create billing</a> -->
+                </div>
+                {% if fees|count == 0 %}
+                  <p>No fees yet.</p>
+                {% else %}
+                  <table class="data-table" id="fees" style="display: table;">
+                      <thead>
+                          <th>Description</th>
+                          <th>Amount</th>
+                          <th>Actions</th>
+                      </thead>
+                      <tbody>
+                          {% for fee in fees %}
+                              <tr>
+                                <td>{{ fee.description }}</td>
+                                <td>{{ fee.amount|apply_currency }}</td>
+                                <td>
+                                  <div>
+                                    <a href="#" class="modal-trigger" data-target="edit-fee-modal" data-entry="{{ fee.id }}">
+                                      {{ edit_icon }}
+                                    </a>
+                                    <a href="#" class="modal-trigger" data-target="delete-fee-modal" data-entry="{{ fee.id }}">
+                                      {{ delete_icon }}
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  {{ form_modal('Add fee', 'add-fee-modal', add_fee_form) }}
+  {{ form_modal('Edit fee', 'edit-fee-modal', add_fee_form) }}
+  {{ confirm_modal('Confirm', 'delete-fee-modal', 'Are you sure to delete this fee?') }}
+  {{ slot_modal('Create bill', 'add-bill-modal', '
+  <div class="modal-step" data-step="1">
+    <div id="student-search">
+      <p>Search student</p>
+      <input type="text" id="student-search-input" />
+      <p id="search-loader" style="display: none">Loading...</p>
+      <table class="data-table" id="student-search-table" style="display: none">
+          <thead>
+              <th>ID</th>
+              <th>Full name</th>
+              <th>Gender</th>
+              <th>Program</th>
+              <th>Year level</th>
+              <th>Status</th>
+          </thead>
+          <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="modal-step" data-step="2" style="display: none">
+    <strong id="billing-recipient" style="display: block; margin-bottom: 1rem;"></strong>
+    <table id="student-info">
+      <tbody>
+        <tr>
+          <td>Student ID</td>
+          <td id="student-id"></td>
+        </tr>
+        <tr>
+          <td>Full name</td>
+          <td id="student-name"></td>
+        </tr>
+        <tr>
+          <td>Program</td>
+          <td id="student-program"></td>
+        </tr>
+        <tr>
+          <td>Year</td>
+          <td id="student-year"></td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td id="student-status"></td>
+        </tr>
+      </tbody>
+    </table>
+    {% if fees|count == 0 %}
+      <p style="text-align: center;">Create fee first.</p>
+    {% else %}
+      <table class="data-table" id="fees-table">
+        <thead>
+          <th>Description</th>
+          <th>Amount</th>
+        </thead>
+        <tbody>
+          {% for fee in fees %}
+            <tr>
+              <td>{{ fee.description }}</td>
+              <td>{{ fee.amount|apply_currency }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="text-align: right">Total:</td>
+            <td>{{ sum_fees|apply_currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <input type="button" value="Create" id="create-bill" />
+    {% endif %}
+  </div>', { 'fees': fees, 'sum_fees': sum_fees }) }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin/fees.js') }}"></script>
+{% endblock %}

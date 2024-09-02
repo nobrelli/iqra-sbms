@@ -1,0 +1,67 @@
+{% from 'components/student_sidebar.html' import sidebar %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+
+{% extends 'layouts/base.html' %}
+
+{% import 'components/icons/receipt.html' as receipt_icon %}
+{% import 'components/icons/book.html' as book_icon %}
+{% import 'components/icons/message.html' as message_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+<div id="student-panel">
+    {{ sidebar('account') }}
+    <div id="student-main">
+        <div class="dashboard-header">
+            <h1>View message</h1>
+            <a href="{{ url_for('student.inbox') }}" class="dashboard-inbox-button">
+                {{ message_icon }}
+                {% if message_count != 0 %}
+                <span class="dashboard-inbox-badge">{{ message_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+        <div id="action-buttons">
+            <a href="#" id="delete-message" class="modal-trigger" data-target="delete-message-modal"
+                style="width: max-content;" data-message-id="{{ message.id }}">{{ delete_icon }}</a>
+        </div>
+        <div id="student-main-contents">
+            <h3>From: {{ message.sender }}</h3>
+            <p style="font-size: 14px; margin-bottom: 32px;">{{ message.sent_date.strftime('%b %d, %Y @ %I:%M %p') }}
+            </p>
+            <p style="line-height: 24px;">{{ message.message }}</p>
+        </div>
+    </div>
+</div>
+{{ confirm_modal('Confirm', 'delete-message-modal', 'Delete this message?') }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script>
+    (() => {
+        new ConfirmModal('delete-message-modal', async () => {
+            let response = await fetch('/student/delete_message', {
+                method: 'POST',
+                body: JSON.stringify({
+                    entry_id: document.getElementById('delete-message').getAttribute('data-message-id')
+                })
+            });
+
+            let result = await response.json();
+
+            if (result.success) {
+                window.location.replace('/student/inbox')
+            }
+
+            return ['Cannot delete.', false]
+        })
+    })()
+</script>
+{% endblock %}

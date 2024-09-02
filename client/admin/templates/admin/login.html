@@ -1,0 +1,43 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Admin Portal{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="system-landing">
+    <div id="heading" style="text-align: center;">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="IQRA Logo" width="100" />
+      <h1>Admin Portal</h1>
+    </div>
+    <div id="login-wrapper">
+      <div id="form-message-container">
+        <p id="form-message"></p>
+      </div>
+      <div id="login-container">
+        <form action="{{ url_for('admin.proc_login') }}" method="post" autocomplete="off" id="admin-login-form">
+          {{ form.csrf_token }}
+          <ul>
+            <li>
+              {{ form.admin_id.label }}
+              {{ form.admin_id }}
+            </li>
+            <li>
+              {{ form.password.label }}
+              {{ form.password }}
+            </li>
+            <li>
+              {{ form.submit }}
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='scripts/admin/login.js') }}"></script>
+{% endblock %}

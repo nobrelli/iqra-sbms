@@ -1,0 +1,39 @@
+{% from 'components/student_sidebar.html' import sidebar %}
+{% extends 'layouts/base.html' %}
+
+{% import 'components/icons/receipt.html' as receipt_icon %}
+{% import 'components/icons/book.html' as book_icon %}
+{% import 'components/icons/message.html' as message_icon %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="student-panel">
+    {{ sidebar() }}
+    <div id="student-main">
+      <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <a href="{{ url_for('student.inbox') }}" class="dashboard-inbox-button">
+          {{ message_icon }}
+          {% if message_count != 0 %}
+            <span class="dashboard-inbox-badge">{{ message_count }}</span>
+          {% endif %}
+        </a>
+      </div>
+      <div id="student-main-contents">
+        <div id="action-buttons">
+          <a href="{{ url_for('student.bills') }}" style="width: max-content">{{ receipt_icon }} Billing</a>
+          <!-- <a href="#">{{ book_icon }} Catalog</a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Student Billing Management System{% endblock %}
+
+{% block contents %}
+
+  <!-- <div id="system-landing">
+    <div id="heading">
+      <h1>Student Billing Management System</h1>
+    </div>
+    
+    <div id="portal-selector">
+      <a href="{{ url_for('admin.login') }}">
+        <h2>Admin Portal</h2>
+      </a>
+      <a href="/student">
+        <h2>Student Portal</h2>
+      </a>
+    </div>
+  </div> -->
+  <p>Redirecting...</p>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+  #system-landing {
+    display: flex;
+    flex-direction: column; /* Arrange items vertically */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    min-height: 100vh; /* Ensure the container takes up full viewport height */
+  }
+
+  #portal-selector {
+    display: flex;
+    justify-content: center;
+    gap: 2em;
+  }
+
+  #portal-selector > a {
+    padding: 1.5em;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid #ccc;
+    text-decoration: none;
+    color: inherit;
+    animation: blink 1.5s infinite; /* Apply animation */
+  }
+
+  #portal-selector > a > h2 {
+    font-size: 1.5em;
+    margin: 0;
+  }
+
+  @keyframes blink {
+    0% { background-color: #f0f8ff; } /* Initial color */
+    50% { background-color: #add8e6; } /* Midway color */
+    100% { background-color: #f0f8ff; } /* Back to initial color */
+  }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    (() => {
+      window.location = '/admin'
+    })()
+  </script>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+{% from 'components/slot_modal.html' import slot_modal %}
+{% from 'components/utils.html' import eval_year_lvl, eval_semester %}
+
+{% import 'components/icons/add.html' as add_icon %}
+{% import 'components/icons/edit.html' as edit_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+{% import 'components/icons/receipt.html' as receipt_icon %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+  Manage Students
+{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="admin-panel">
+    {{ sidebar('students') }}
+    <div id="admin-main">
+        <h1>Students</h1>
+        <div id="admin-main-contents">
+            <div class="data-tables">
+              <div class="data-table-wrapper">
+                <div id="action-buttons">
+                  <a href="#" class="modal-trigger" data-target="add-student-modal" style="width: max-content">{{ add_icon }} Add student</a>
+                  {% if students|count > 0 %}
+                  <a href="#" class="modal-trigger" data-target="add-bill-modal" style="width: max-content">{{ receipt_icon }} Bill student(s)</a>
+                  {% endif %}
+                  <input class="form-input" type="text" id="student-filter" placeholder="Search for student name or ID..." style="flex: 1" />
+                </div>
+                {% if students|count == 0 %}
+                  <p>No students yet.</p>
+                {% else %}
+                <table class="data-table" id="subjects" style="display: block"></table>
+                
+                <table class="data-table" id="students-table" style="display: block">
+
+                      <thead>
+                          <th style="width: auto">
+                            <input type="checkbox" class="table-check-all" />
+                          </th>
+                          <th>Date added</th>
+                          <th>Student ID</th>
+                          <th>Last name</th>
+                          <th>First name</th>
+                          <th>Middle name</th>
+                          <th>Gender</th>
+                          <th>Program</th>
+                          <th>Year level</th>
+                          <th>Status</th>
+                          <th>Birthdate</th>
+                          <th>Address</th>
+                          <th>Phone</th>
+                          <th>Email</th>
+                          <th>Actions</th>
+                      </thead>
+                      <tbody>
+                          {% for student in students %}
+                              <tr>
+                                <td>
+                                  <input type="checkbox" class="table-check-this" data-target="{{student.student_id}}" />
+                                </td>
+                                <td>{{ student.entry_date.strftime('%b %d, %Y @ %I:%M %p') }}</td>
+                                <td class="student-id"><a href="{{ url_for('admin.view_student', student_id=student.id) }}">{{ student.student_id }}</a></td>
+                                <td class="student-lname">{{ student.lastname }}</td>
+                                <td class="student-fname">{{ student.firstname }}</td>
+                                <td class="student-mname">{{ student.middlename }}</td>
+                                <td>{{ student.gender }}</td>
+                                <td>{{ student.program|parse_program }}</td>
+                                <td>{{ eval_year_lvl(student.year) }}</td>
+                                <td>{{ student.status }}</td>
+                                <td>{{ student.birthdate.strftime('%b %d, %Y') }}</td>
+                                <td>{{ student.address }}</td>
+                                <td>{{ student.phone }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>
+                                  <div>
+                                    <a href="#" class="modal-trigger" data-target="edit-student-modal" data-entry="{{ student.student_id }}">
+                                      {{ edit_icon }}
+                                    </a>
+                                    <a href="#" class="modal-trigger" data-target="delete-student-modal" data-entry="{{ student.student_id }}">
+                                      {{ delete_icon }}
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  {{ form_modal('Add student', 'add-student-modal', student_form) }}
+  {{ form_modal('Edit student', 'edit-student-modal', student_form) }}
+  {{ confirm_modal('Confirm', 'delete-student-modal', 'Are you sure to delete this entry?') }}
+  {{ slot_modal('Add bill', 'add-bill-modal', '
+  <div class="modal-step">
+    {% if fees|count == 0 %}
+      <p style="text-align: center;">Create fee first.</p>
+    {% else %}
+      <p><b>Fees</b></p>
+      <table class="data-table" id="fees-table">
+        <thead>
+          <th>Description</th>
+          <th>Amount</th>
+        </thead>
+        <tbody>
+          {% for fee in fees %}
+            <tr>
+              <td>{{ fee.description }}</td>
+              <td>{{ fee.amount|apply_currency }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td style="text-align: right">Total:</td>
+            <td>{{ sum_fees|apply_currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <textarea class="form-input" id="message-box" placeholder="Message (optional)" style="margin-top: 12px"></textarea>
+      <input type="button" value="Create" id="create-bill" disabled />
+    {% endif %}
+  </div>', { 'fees': fees, 'sum_fees': sum_fees }) }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script src="{{ url_for('static', filename='scripts/admin/student.js') }}"></script>
+{% endblock %}

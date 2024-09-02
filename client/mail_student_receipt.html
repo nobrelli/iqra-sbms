@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <title>Payment Receipt</title>
+    <style>
+        * {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" width="100" alt="IQRA Logo" />
+        <h2>IQRA Development Academy, Inc.</h2>
+    </div>
+    <hr />
+    <h1>Payment Receipt</h1>
+    <hr />
+    <table id="letter-header" style="width: 100%; font-size: 1.2em">
+        <td>
+            <ul style="list-style: none; margin: 0; padding: 0;">
+                <li style="margin: 0;">Student name: <b>{{ student_name }}</b></li>
+                <li style="margin: 0;">Student ID: <b>{{ student_id }}</b></li>
+                <li style="margin: 0;">Program: <b>{{ program }}</b></li>
+                <li style="margin: 0;">Address: <b>{{ address }}</b></li>
+            </ul>
+        </td>
+        <td style="display: block;">
+            <ul style="list-style: none; margin: 0; padding: 0;">
+                <li style="margin: 0;">Bill number: <b>{{ bill_id }}</b></li>
+                <li style="margin: 0;">Date & time: <b>{{ datetime.strftime('%b %d, %Y @ %I:%M %p') }}</b></li>
+            </ul>
+        </td>
+    </table>
+    <hr />
+    <table id="letter-body" style="width: 100%; font-size: 1.2em; border-spacing: 0px; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #203a43; color: white;">
+                <th style="border: 1px solid #3b535b; padding: 0.5em;">Description</th>
+                <th style="border: 1px solid #3b535b; padding: 0.5em;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ item[0] }}</td>
+                <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ item[1]|apply_currency }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot style="font-weight: bold">
+            <tr>
+                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Total</td>
+                <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ total|apply_currency }}</td>
+            </tr>
+            <tr>
+                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Amount Paid</td>
+                <td style="color: rgb(0, 59, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ amount|apply_currency }}
+                </td>
+            </tr>
+            {% if balance > 0 %}
+            <tr>
+                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Balance</td>
+                <td style="color: rgb(129, 0, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ balance|apply_currency
+                    }}</td>
+            </tr>
+            {% endif %}
+        </tfoot>
+    </table>
+    <div id="letter-footer">
+        <p style="font-size: 1.2em;">This receipt is the proof of the payment received.</p>
+    </div>
+</body>
+
+</html>

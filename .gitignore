@@ -1,0 +1,8 @@
+.vscode/
+server/flask_session/
+server/migrations/
+**/__pycache__/
+
+*.bak
+*.csv
+server/system/config.py

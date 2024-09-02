@@ -1,0 +1,43 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Student Portal{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/login.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="system-landing">
+    <div id="heading" style="text-align: center;">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="IQRA Logo" width="100" />
+      <h1>Student Portal</h1>
+    </div>
+    <div id="login-wrapper">
+      <div id="form-message-container">
+        <p id="form-message"></p>
+      </div>
+      <div id="login-container">
+        <form action="{{ url_for('student.proc_login') }}" method="post" autocomplete="off" id="student-login-form">
+          {{ form.csrf_token }}
+          <ul>
+            <li>
+              {{ form.student_id.label }}
+              {{ form.student_id }}
+            </li>
+            <li>
+              {{ form.password.label }}
+              {{ form.password }}
+            </li>
+            <li>
+              {{ form.submit }}
+            </li>
+          </ul>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='scripts/student/login.js') }}"></script>
+{% endblock %}

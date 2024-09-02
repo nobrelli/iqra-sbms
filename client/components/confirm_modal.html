@@ -1,0 +1,23 @@
+{% macro confirm_modal(title, modal_id, message, yes_btn='Yes', no_btn='No') %}
+<div class="modal-overlay" id="{{ modal_id }}">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">{{ title }}</h2>
+            <a href="#" class="modal-close">x</a>
+        </div>
+        <div class="modal-contents">
+            <div class="modal-message">
+                <p></p>
+            </div>
+            <form>
+                <input type="hidden" name="entry_id" />
+            </form>
+            <p class="modal-display-message">{{ message }}</p>
+            <div>
+                <input type="button" value="{{ yes_btn }}" class="modal-yes-btn" />
+                <input type="button" value="{{ no_btn }}" class="modal-no-btn" />
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

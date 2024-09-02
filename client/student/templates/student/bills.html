@@ -1,0 +1,195 @@
+{% from 'components/student_sidebar.html' import sidebar %}
+{% from 'components/slot_modal.html' import slot_modal %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/utils.html' import eval_year_lvl, eval_semester %}
+
+{% extends 'layouts/base.html' %}
+
+{% import 'components/icons/receipt.html' as receipt_icon %}
+{% import 'components/icons/message.html' as message_icon %}
+
+{% block title %}My Bills{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="student-panel">
+    {{ sidebar('bills') }}
+    <div id="student-main">
+      <div class="dashboard-header">
+        <h1>My Bills</h1>
+        <a href="{{ url_for('student.inbox') }}" class="dashboard-inbox-button">
+            {{ message_icon }}
+            {% if message_count != 0 %}
+            <span class="dashboard-inbox-badge">{{ message_count }}</span>
+            {% endif %}
+        </a>
+      </div>
+      <div id="student-main-contents">
+        <div class="data-tables">
+            <div class="data-table-wrapper">
+                <h2>Billings</h2>
+                {% if bills|count == 0 %}
+                  <p>No billings yet.</p>
+                {% else %}
+                  <table class="data-table" id="subjects" style="display: block;">
+                      <thead>
+                        <th>Bill ID</th>
+                        <th>Date</th>
+                        <th>Latest Payment Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </thead>
+                      <tbody>
+                          {% for billing in bills %}
+                              <tr>
+                                <td>{{ billing.bill_id|truncate(10) }}</td>
+                                <td>{{ billing.entry_date.strftime('%b %d, %Y @ %I:%M %p') }}</td>
+                                <td>{% if billing.last_payment_date %}{{ billing.last_payment_date.strftime('%b %d, %Y @ %I:%M %p') }}{% else %}-{% endif %}</td>
+                                <td>{{ billing.total_amount|apply_currency }}</td>
+                                <td>
+                                    <span class="data-table-badge 
+                                    {%- if billing.status == 'pending' %} moderate
+                                    {%- elif billing.status == 'incomplete' %} warning
+                                    {%- elif billing.status == 'complete' %} ok
+                                    {%- else %} failed
+                                    {%- endif %}">
+                                    {%- if billing.status == 'pending' %}PENDING
+                                    {%- elif billing.status == 'incomplete' %}INCOMPLETE
+                                    {%- else %}COMPLETE
+                                    {%- endif -%}
+                                  </span>
+                                </td>
+                                <td>
+                                    <div>
+                                        <a href="#" class="modal-trigger" data-target="settle-bill-modal" data-entry="{{ billing.bill_id }}">
+                                        {{ receipt_icon }}
+                                        </a>
+                                    </div>
+                                </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{ slot_modal('View bill', 'settle-bill-modal', '
+    <table id="student-info">
+      <tbody>
+        <tr>
+          <td>Student ID</td>
+          <td id="student-id">{{ student.student_id }}</td>
+        </tr>
+        <tr>
+          <td>Full name</td>
+          <td id="student-name">{{ student.lastname }}, {{ student.firstname }} {{ student.middlename }}</td>
+        </tr>
+        <tr>
+          <td>Program</td>
+          <td id="student-program">{{ program }}</td>
+        </tr>
+        <tr>
+          <td>Year</td>
+          <td id="student-year">{{ eval_year_lvl(student.year) }}</td>
+        </tr>
+        <tr>
+          <td>Status</td>
+          <td id="student-status">{{ student.status }}</td>
+        </tr>
+        <tr>
+            <td>Semester</td>
+            <td id="student-semester">{{ semester.year_start }}-{{ semester.year_end }} ({{ eval_semester(semester.semester) }} semester)</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="data-table" id="fees-table">
+        <thead>
+            <th>Description</th>
+            <th>Amount</th>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+            <td style="text-align: right">Total:</td>
+            <td id="bills-total" style="text-align: right"></td>
+            </tr>
+        </tfoot>
+    </table>
+    <h3>Payments</h3>
+    <p id="payments-message" style="text-align: center;">No payments yet.</p>
+    <table class="data-table" id="payments-table" style="display: none;">
+        <thead>
+            <th>Timestamp</th>
+            <th>Amount</th>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td style="text-align: right">Total Paid:</td>
+                <td id="total-paid" style="text-align: right; color: rgb(0, 59, 0);"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">Balance:</td>
+                <td id="bills-balance" style="text-align: right; color: rgb(129, 0, 0);"></td>
+            </tr>
+        </tfoot>
+    </table>
+    <input type="button" class="modal-trigger" data-target="pay-bill-modal" value="Settle" id="settle-bill" />
+  </div>',
+  { 
+    'student': student, 
+    'program': program.description,
+    'eval_year_lvl': eval_year_lvl,
+    'eval_semester': eval_semester,
+    'semester': semester
+    }) 
+  }}
+
+  {{ 
+    slot_modal('Pay bill', 'pay-bill-modal', '
+      <div id="amount-section">
+        <label for="amount">Amount (PHP)</label>
+        <input type="number" id="amount" name="amount" min="50" />
+        <input type="button" class="form-input" value="Proceed" id="amount-submit" />
+      </div>
+      <div id="payment-section" style="display: none">
+        <form id="payment-form">
+          <div id="payment-loading" style="display: none">
+            <span class="loading-spinner"></span>
+            <span class="loading-check" style="display:none">
+              <i class="check"></i>
+            </span>
+            <p class="loading-text">Processing payment please do not close or refresh this window...</p>
+          </div>
+          <input type="hidden" name="bill_id" />
+          <div id="payment-element"></div>
+          <div style="
+            flex-direction: row;
+            gap: 10px;
+            margin-top: 1em;
+          ">
+            <input type="button" class="form-input" value="Back" id="payment-back" style="display: none" />
+            <input type="submit" class="form-input" value="Pay now" />
+          </div>
+        </form>
+      </div>
+    ') 
+  }}
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+  <script src="{{ url_for('static', filename='scripts/student/bills.js') }}"></script>
+{% endblock %}

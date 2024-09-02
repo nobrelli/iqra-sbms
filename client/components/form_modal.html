@@ -1,0 +1,27 @@
+{% macro form_modal(title, modal_id, form) %}
+<div class="modal-overlay" id="{{ modal_id }}">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2 class="modal-title">{{ title }}</h2>
+            <a href="#" class="modal-close">x</a>
+        </div>
+        <div class="modal-contents">
+            <div class="modal-message"></div>
+            <form>
+                {{ form.hidden_tag() }}
+                <input type="hidden" name="entry_id" />
+                {% for field in form if field.name != 'csrf_token' if field.type != 'HiddenField' %}
+                    <div>
+                        {% if field.name == 'submit' %}
+                            {{ field }}
+                        {% else %}
+                            {{ field.label }}
+                            {{ field }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endmacro %}

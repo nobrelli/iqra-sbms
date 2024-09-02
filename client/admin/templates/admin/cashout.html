@@ -1,0 +1,69 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% from 'components/form_modal.html' import form_modal %}
+{% from 'components/confirm_modal.html' import confirm_modal %}
+{% from 'components/slot_modal.html' import slot_modal %}
+
+{% import 'components/icons/add.html' as add_icon %}
+{% import 'components/icons/edit.html' as edit_icon %}
+{% import 'components/icons/delete.html' as delete_icon %}
+{% import 'components/icons/receipt.html' as receipt_icon %}
+
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+Cashout
+{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+<div id="admin-panel">
+    {{ sidebar('cashout') }}
+    <div id="admin-main">
+        <h1>Cash Outflows</h1>
+        <div id="admin-main-contents">
+            <div class="data-tables">
+                <div class="data-table-wrapper">
+                    <div id="action-buttons">
+                        <a href="#" class="modal-trigger" data-target="add-outflow-modal" style="width: max-content">{{
+                            receipt_icon }} Cash out</a>
+                    </div>
+                    {% if outflows|count == 0 %}
+                    <p>No cash outflows yet.</p>
+                    {% else %}
+                    <table class="data-table" id="fees" style="display: table;">
+                        <thead>
+                            <th>Timestamp</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </thead>
+                        <tbody>
+                            {% for outflow in outflows %}
+                            <tr>
+                                <td>{{ outflow.timestamp.strftime('%b %d, %Y @ %I:%M %p') }}</td>
+                                <td>{{ outflow.amount|apply_currency }}</td>
+                                <td>{{ outflow.description }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ form_modal('Cash out', 'add-outflow-modal', cashout_form) }}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/utils/modal.js') }}"></script>
+<script>
+    (() => {
+        new FormModal('add-outflow-modal', '/admin/add_outflow')
+    })()
+</script>
+{% endblock %}

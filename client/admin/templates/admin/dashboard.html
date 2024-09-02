@@ -1,0 +1,45 @@
+{% from 'components/admin_sidebar.html' import sidebar %}
+{% extends 'layouts/base.html' %}
+
+{% import 'components/icons/group.html' as group_icon %}
+{% import 'components/icons/receipt.html' as receipt_icon %}
+{% import 'components/icons/book.html' as book_icon %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles/dashboard.css') }}" />
+{% endblock %}
+
+{% block contents %}
+  <div id="admin-panel">
+    {{ sidebar() }}
+    <div id="admin-main">
+      <div class="dashboard-header">
+        <h1>Dashboard</h1>
+      </div>
+      <div id="admin-main-contents">
+        <div id="action-buttons">
+          <a href="{{ url_for('admin.students') }}">{{ group_icon }} Students</a>
+          <a href="{{ url_for('admin.fees') }}">{{ receipt_icon }} Fees</a>
+          <a href="{{ url_for('admin.catalog') }}">{{ book_icon }} Catalog</a>
+          <a href="{{ url_for('admin.cashout') }}">{{ receipt_icon }} Cash out</a>
+        </div>
+      </div>
+      <div id="admin-report">
+        <div class="report-item">
+          <p>Total Students</p>
+          <p class="report-item-number">{{ students }}</p>
+        </div>
+        <div class="report-item">
+          <p>Net Profit</p>
+          <p class="report-item-number">{{ profit|apply_currency }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  
+{% endblock %}

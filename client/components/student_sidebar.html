@@ -1,0 +1,19 @@
+{% import 'components/icons/logout.html' as logout_icon %}
+
+{% macro sidebar(current='dashboard') %}
+    <div id="sidebar">
+        <div id="sidebar-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" width="100" alt="IQRA Logo" />
+        </div>
+        <div id="sidebar-nav">
+            <a class="sidebar-link {% if current == 'dashboard' %}active{% endif %}" href="{{ url_for('student.index') }}">Dashboard</a>
+            <a class="sidebar-link {% if current == 'bills' %}active{% endif %}" href="{{ url_for('student.bills') }}">Bills</a>
+            <a class="sidebar-link {% if current == 'account' %}active{% endif %}" href="{{ url_for('student.account') }}">Account</a>
+        </div>
+        <div id="sidebar-footer">
+            <form action="{{ url_for('student.logout') }}" method="post">
+                <button type="submit" id="logout-button" class="regular-btn">{{ logout_icon }} Log out</button>
+            </form>
+        </div>
+    </div>
+{% endmacro %}
