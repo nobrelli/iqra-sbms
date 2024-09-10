@@ -287,6 +287,20 @@ def add_semester():
     return respond('New semester added. Reloading...')
 
 
+@admin.post('/close_semester')
+def close_semester():
+    semester_id = request.get_json(True)['entry_id']
+    semester = db.session.query(Semester).get(semester_id)
+
+    if semester:
+        semester.status = False
+        db.session.commit()
+
+        return respond('Semester closed. Reloading...')
+    
+    return respond('Could not close semester.', False)
+
+
 @admin.post('/delete_semester')
 def delete_semester():
     semester_id = request.get_json(True)['entry_id']
@@ -455,7 +469,7 @@ def add_student():
         address=form.address.data,
         phone=form.phone.data,
         email=form.email.data,
-        semester_id=request.form.get('semester_id')
+        semester=form.semester.data
     )
 
     db.session.add(new_student)
@@ -507,15 +521,6 @@ def delete_student():
 def get_student_info():
     entry_id = request.args.get('entry_id')
     entry = db.session.query(Student).filter_by(student_id=entry_id).first()
-    acad_year = db.session.query(Semester).get(entry.semester_id)
-
-    match acad_year.semester:
-        case 1:
-            semester = '1st'
-        case 2:
-            semester = '2nd'
-        case _:
-            semester = '3rd'
 
     return {
         'student_id': entry.student_id,
@@ -531,7 +536,7 @@ def get_student_info():
         'address': entry.address,
         'phone': entry.phone,
         'email': entry.email,
-        'semester': f'{acad_year.year_start}-{acad_year.year_end} ({semester} semester)'
+        'semester': entry.semester
     }
 
 

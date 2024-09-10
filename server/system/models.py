@@ -34,7 +34,6 @@ class Semester(db.Model):
     year_end: Mapped[int] = mapped_column(db.Integer)
     semester: Mapped[int] = mapped_column(db.Integer)
     status: Mapped[bool] = mapped_column(db.Boolean, default=True)
-    students: Mapped[List['Student']] = relationship()
 
 
 ProgramSubject = db.Table(
@@ -109,7 +108,7 @@ class Student(db.Model):
     address: Mapped[str] = mapped_column(db.String(150))
     phone: Mapped[str] = mapped_column(db.String(15))
     email: Mapped[str] = mapped_column(db.String(100), nullable=True)
-    semester_id: Mapped[int] = mapped_column(ForeignKey('semesters.id'))
+    semester: Mapped[str] = mapped_column(db.String(100))
     bills: Mapped[List['Bill']] = relationship(cascade='all, delete-orphan')
     
 

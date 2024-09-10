@@ -92,7 +92,7 @@ def bills():
     bills = db.session.query(Bill).filter_by(student_id=session.get('student_id')).all()
     student = db.session.query(Student).filter_by(student_id=session.get('student_id')).one()
     program = db.session.query(Program).get(student.program)
-    semester = db.session.query(Semester).get(student.semester_id)
+    semester = db.session.query(Semester).get(student.semester)
 
     message_count = db.session.query(Message).filter_by(
         student_id=session.get('student_id'),

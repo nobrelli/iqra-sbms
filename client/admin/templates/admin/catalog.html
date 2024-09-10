@@ -5,6 +5,7 @@
 {% import 'components/icons/edit.html' as edit_icon %}
 {% import 'components/icons/delete.html' as delete_icon %}
 {% import 'components/icons/add.html' as add_icon %}
+{% import 'components/icons/close.html' as close_icon %}
 
 {% from 'components/utils.html' import eval_semester %}
 
@@ -55,7 +56,12 @@
                                   {%- endif -%}
                                 </span>
                               </td>
-                              <td>
+                              <td style="text-align: right">
+                                {%- if semester.status %}
+                                  <a href="#" class="modal-trigger" data-target="close-semester-modal" data-entry="{{ semester.id }}">
+                                    {{ close_icon }}
+                                  </a>
+                                {%- endif %}
                                 <a href="#" class="modal-trigger" data-target="delete-semester-modal" data-entry="{{ semester.id }}">
                                   {{ delete_icon }}
                                 </a>
@@ -144,6 +150,7 @@
   {{ form_modal('Edit program', 'edit-program-modal', program_form) }}
   {{ form_modal('Edit subject', 'edit-subject-modal', subject_form) }}
 
+  {{ confirm_modal('Confirm', 'close-semester-modal', 'Are you sure to close this semester?') }}
   {{ confirm_modal('Confirm', 'delete-semester-modal', 'Some programs might have subjects under this semester. Are you sure to remove this semester?') }}
   {{ confirm_modal('Confirm', 'delete-program-modal', 'Are you sure to remove this program and all of its subjects?') }}
   {{ confirm_modal('Confirm', 'delete-subject-modal', 'Some programs might depend on this subject. Are you sure to remove this subject?') }}

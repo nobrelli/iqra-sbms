@@ -39,6 +39,23 @@
     
         return ['Cannot delete.', false]
     })
+
+    new ConfirmModal('close-semester-modal', async() => {
+        let response = await fetch('/admin/close_semester', {
+            method: 'POST',
+            body: JSON.stringify({ 
+                entry_id: document.querySelector('#close-semester-modal [name="entry_id"]').value
+            })
+        });
+        
+        let result = await response.json();
+    
+        if (result.success) {
+            return ['Semester closed.', true]
+        }
+    
+        return ['Cannot close semester.', false]
+    })
     
     new ConfirmModal('delete-semester-modal', async() => {
         let response = await fetch('/admin/delete_semester', {

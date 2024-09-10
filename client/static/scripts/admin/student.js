@@ -4,19 +4,12 @@ const getRand = () => {
 
 const initAcadYear = async () => {
     const acadYear = document.querySelector('#add-student-modal #semester')
-    const form = document.querySelector('#add-student-modal form')
 
     acadYear.setAttribute('readonly', 'readonly')
 
     let response = await fetch('/admin/get_current_academic_year')
     let result = await response.json()
-    let semester_id = document.createElement('input')
 
-    semester_id.value = result.id
-    semester_id.name = 'semester_id'
-    semester_id.hidden = true
-
-    form.prepend(semester_id)
     acadYear.value = result.semester
 }
 

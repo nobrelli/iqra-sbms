@@ -190,7 +190,7 @@ def view_student(student_id):
     settle_form = SettleForm()
     student = db.session.query(Student).get(student_id)
     program = db.session.query(Program).get(student.program)
-    semester = db.session.query(Semester).get(student.semester_id)
+    semester = db.session.query(Semester).get(student.semester)
 
     return render_template(
         'admin/student.html', 
