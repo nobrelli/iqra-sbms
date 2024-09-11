@@ -877,7 +877,10 @@ def get_bill_info():
                 else:
                     discount_amount = discount.amount
 
-    text_amount = '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
+    text_amount = None
+
+    if bill_info.discounted:
+        '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
 
     return {
         'entry_date': bill_info.entry_date,
@@ -904,7 +907,7 @@ def acknowledge_payment():
     bill_info = db.session.query(Bill).get(bill_id)
     student = db.session.query(Student).filter_by(student_id=student_id).one_or_none()
     scholarship = None if not student else student.scholarship
-    discount = None if not scholarship else db.session.query(Scholarship).filter_by(description=scholarship).one()
+    discount = None if not scholarship else db.session.query(Scholarship).filter_by(description=scholarship).one_or_none()
     discount_amount = 0
 
     for fee in bill_info.fees:
@@ -939,7 +942,10 @@ def acknowledge_payment():
             
         db.session.commit()
 
-        text_amount = '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
+        text_amount = None
+        
+        if billing.discounted:
+            '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
         
         return respond(message='Payment success!', html=render_template(
             os.path.join('mail_student_receipt.html'),
@@ -962,4 +968,4 @@ def acknowledge_payment():
         )
     )
     except Exception as e:
-        return respond('Server error occurred.', False)
+        return respond('Server error occurred.' + str(e), False)
