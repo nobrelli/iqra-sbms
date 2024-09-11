@@ -877,6 +877,8 @@ def get_bill_info():
                 else:
                     discount_amount = discount.amount
 
+    text_amount = '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
+
     return {
         'entry_date': bill_info.entry_date,
         'total_amount': bill_info.total_amount,
@@ -888,7 +890,7 @@ def get_bill_info():
         'status': bill_info.status,
         'balance': balance,
         'discount': {
-            'description': f'{scholarship} (less {'₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'})',
+            'description': f'{scholarship} (less {text_amount})',
             'amount': discount_amount
         } if bill_info.discounted else None
     }
@@ -936,6 +938,8 @@ def acknowledge_payment():
             balance = billing.total_amount - billing.total_paid
             
         db.session.commit()
+
+        text_amount = '₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'
         
         return respond(message='Payment success!', html=render_template(
             os.path.join('mail_student_receipt.html'),
@@ -952,7 +956,7 @@ def acknowledge_payment():
             paid=amount,
             balance=balance,
             discount={
-                'description': f'{scholarship} (less {'₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'})',
+                'description': f'{scholarship} (less {text_amount})',
                 'amount': discount_amount
             } if billing.discounted else None
         )
