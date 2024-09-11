@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    const studentID = document.getElementById('student-id-hidden').value
     new BaseModal('settle-bill-modal')
-    const payBillModal = new FormModal('pay-bill-modal', '/admin/acknowledge_payment')
+    const payBillModal = new FormModal('pay-bill-modal', `/admin/acknowledge_payment?student_id=${studentID}`)
     let totalAmount = 0.0
 
     const formatter = new Intl.NumberFormat('en-US', {
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         bill.addEventListener('click', async() => {
             const billId = bill.getAttribute('data-entry')
-            let response = await fetch(`/admin/get_bill_info?bill_id=${billId}`)
+            let response = await fetch(`/admin/get_bill_info?bill_id=${billId}&student_id=${studentID}`)
             let result = await response.json()
 
             // clear first
@@ -30,10 +31,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const fee = document.createElement('tr')
                 fee.innerHTML = `
                     <td>${item[0]}</td>
-                    <td style="text-align: right;">${formatter.format(item[1])}</td>
+                    <td style="text-align: right;">+ ${formatter.format(item[1])}</td>
                 `
                 fees.appendChild(fee)
             })
+
+            if (result.discount) {
+                const discount = document.createElement('tr')
+                discount.innerHTML = `
+                    <td style="color: green;">${result.discount.description}</td>
+                    <td style="text-align: right; color: green; font-weight: bold">- ${formatter.format(result.discount.amount)}</td>
+                `
+                fees.appendChild(discount)
+            }
 
             let total = formatter.format(result.total_amount)
             

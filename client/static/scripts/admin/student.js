@@ -49,6 +49,26 @@ const initPrograms = async () => {
     })
 }
 
+const initDiscounts = async () => {
+    const discounts = document.querySelectorAll('#add-student-modal #scholarship, #edit-student-modal #scholarship')
+
+    let response = await fetch('/admin/get_discounts')
+    let results = await response.json()
+
+    discounts.forEach(discount => {
+        discount.setAttribute('required', true)
+        discount.innerHTML = '<option value="None" selected>N/A</option>'
+
+        for (const description of results) {
+            const option = document.createElement('option')
+            option.value = description
+            option.text = description
+
+            discount.appendChild(option)
+        }
+    })
+}
+
 const initTable = (modal) => {
     let checkedEntries = []
 
@@ -186,6 +206,7 @@ const initTable = (modal) => {
     initTable(addBillModal)
     initAcadYear()
     // initStudentId()
+    initDiscounts()
     initPrograms()
 })()
 

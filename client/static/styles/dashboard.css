@@ -28,6 +28,7 @@
     font-size: 1.15em;
     text-align: left;
     width: 100%;
+    text-wrap: nowrap;
 }
 
 .sidebar-link:hover,
@@ -199,7 +200,7 @@
     font-family: inherit;
 }
 
-.modal-contents input:not([type="submit"]):not([type="button"]):read-only {
+.modal-contents input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):read-only {
     cursor: not-allowed;
 }
 

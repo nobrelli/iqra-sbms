@@ -45,9 +45,16 @@
             {% for item in items %}
             <tr>
                 <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ item[0] }}</td>
-                <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ item[1]|apply_currency }}</td>
+                <td style="border: 1px solid #e2e2e2; padding: 0.5em;">+ {{ item[1]|apply_currency }}</td>
             </tr>
             {% endfor %}
+            {% if discount %}
+            <tr>
+                <td style="color: rgb(0, 59, 0); border: 1px solid #e2e2e2; padding: 0.5em; font-weight: bold;">{{ discount.description }}</td>
+                <td style="color: rgb(0, 59, 0); border: 1px solid #e2e2e2; padding: 0.5em; font-weight: bold;">- {{ discount.amount|apply_currency }}
+                </td>
+            </tr>
+            {% endif %}
         </tbody>
         <tfoot style="font-weight: bold">
             <tr>
@@ -55,15 +62,19 @@
                 <td style="border: 1px solid #e2e2e2; padding: 0.5em;">{{ total|apply_currency }}</td>
             </tr>
             <tr>
-                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Amount Paid</td>
+                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Amount Tendered</td>
+                <td style="color: rgb(0, 59, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ paid|apply_currency }}
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Total Amount Paid</td>
                 <td style="color: rgb(0, 59, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ amount|apply_currency }}
                 </td>
             </tr>
             {% if balance > 0 %}
             <tr>
                 <td style="text-align: right; border: 1px solid #e2e2e2; padding: 0.5em;">Balance</td>
-                <td style="color: rgb(129, 0, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ balance|apply_currency
-                    }}</td>
+                <td style="color: rgb(129, 0, 0); border: 1px solid #e2e2e2; padding: 0.5em;">{{ balance|apply_currency }}</td>
             </tr>
             {% endif %}
         </tfoot>

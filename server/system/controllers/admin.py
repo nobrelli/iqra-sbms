@@ -5,7 +5,8 @@ from ..views.admin import admin
 from ..models import (
     Admin,
     Cashout,
-    Fee, 
+    Fee,
+    Scholarship, 
     Student, 
     Program, 
     Subject, 
@@ -18,6 +19,7 @@ from ..models import (
 from flask import session, redirect, url_for, request, current_app, render_template
 from flask_mail import Message
 from ..forms import (
+    AddDiscountForm,
     AddFeeForm,
     AdminLoginForm, 
     ChangePasswordForm, 
@@ -246,6 +248,14 @@ def get_programs():
     return choices
 
 
+@admin.get('/get_discounts')
+def get_discounts():
+    discounts = db.session.query(Scholarship).all()
+    choices = [discount.description for discount in discounts]
+
+    return choices
+
+
 @admin.get('/get_subjects')
 def get_subjects():
     subjects = db.session.query(Subject).all()
@@ -469,7 +479,8 @@ def add_student():
         address=form.address.data,
         phone=form.phone.data,
         email=form.email.data,
-        semester=form.semester.data
+        semester=form.semester.data,
+        scholarship=form.scholarship.data
     )
 
     db.session.add(new_student)
@@ -501,6 +512,29 @@ def edit_student():
     to_edit_student.address = form.address.data
     to_edit_student.phone = form.phone.data
     to_edit_student.email = form.email.data
+    to_edit_student.scholarship = form.scholarship.data
+
+    # If discount is set, apply it to all bills except the completed bills
+    # if form.scholarship.data:
+    #     bills = db.session.query(Bill).filter_by(student_id=request.form.get('entry_id')).all()
+    #     discount = db.session.query(Scholarship).filter_by(description=form.scholarship.data).one()
+    #     sum_fees = 0
+
+    #     if bills:
+    #         for bill in bills:
+    #             for fee in bill.fees:
+    #                 amount = fee.amount
+
+    #                 if fee[0].lower() == 'miscellaneous fee' and discount:
+    #                     if discount.is_percent:
+    #                         amount = fee[1] - fee[1] * (discount / 100)
+    #                     else:
+    #                         amount = fee[1] - discount
+
+    #                 sum_fees += amount
+
+    #             if bill.status == 'pending':
+    #                 bill.total_amount = sum_fees
 
     db.session.commit()
     
@@ -537,6 +571,67 @@ def get_student_info():
         'phone': entry.phone,
         'email': entry.email,
         'semester': entry.semester
+    }
+
+
+@admin.post('/add_discount')
+def add_discount():
+    form = AddDiscountForm()
+
+    if not form.validate_on_submit():
+        return respond(form.errors, False)
+    
+    new_discount = Scholarship(
+        is_percent=int(form.is_percent.data),
+        description=form.description.data,
+        amount=form.amount.data,
+    )
+
+    db.session.add(new_discount)
+    db.session.commit()
+    
+    return respond('Discount added. Reloading...')
+
+
+@admin.post('/edit_discount')
+def edit_discount():
+    form = AddDiscountForm()
+
+    if not form.validate_on_submit():
+        return respond(form.errors, False)
+    
+    to_edit_discount = db.session.query(Scholarship).filter_by(
+        id=request.form.get('entry_id')
+    ).first()
+
+    to_edit_discount.description = form.description.data
+    to_edit_discount.is_percent = int(form.is_percent.data)
+    to_edit_discount.amount = form.amount.data
+
+    db.session.commit()
+    
+    return respond('Discount edited. Reloading...')
+
+
+@admin.post('/delete_discount')
+def delete_discount():
+    discount_id = request.get_json(True)['entry_id']
+    to_delete_discount = db.session.query(Scholarship).filter_by(id=discount_id).one()
+    db.session.delete(to_delete_discount)
+    db.session.commit()
+    
+    return respond('Discount deleted. Reloading...')
+
+
+@admin.get('/get_discount_info')
+def get_discount_info():
+    entry_id = request.args.get('entry_id')
+    entry = db.session.query(Scholarship).filter_by(id=entry_id).first()
+
+    return {
+        'description': entry.description,
+        'is_percent': int(entry.is_percent),
+        'amount': entry.amount,
     }
 
 
@@ -623,17 +718,41 @@ def search_student():
 def add_bill():
     student_id = request.get_json(True)['student_id']
     fees = db.session.query(Fee).all()
-    sum_fees = 0
 
-    for fee in fees:
-        sum_fees += fee.amount
+    # Check if student has scholarship
+    student = db.session.query(Student).filter_by(student_id=student_id).one_or_none()
+    scholarship = None
+    discount = None
+
+    if student:
+        scholarship = student.scholarship
+        
+    if scholarship != 'None':
+        # Check if the scholarship is in the list
+        discount = db.session.query(Scholarship).filter_by(description=scholarship).one_or_none()
+
+    if discount:
+        sum_fees = 0
+
+        for fee in fees:
+            amount = fee.amount
+
+            if fee.description.lower() == 'miscellaneous fee':
+                if discount.is_percent:
+                    amount = fee.amount - fee.amount * (discount.amount / 100)
+                else:
+                    amount = fee.amount - discount.amount
+
+            sum_fees += amount
 
     new_bill = Bill(
         bill_id=shortuuid.uuid(),
         entry_date=datetime.now(),
         student_id=student_id,
         total_amount=sum_fees,
-        fees=[(fee.description, fee.amount) for fee in fees]
+        fees=[(fee.description, fee.amount) for fee in fees],
+        discounted=True if scholarship else False,
+        discount=scholarship
     )
 
     db.session.add(new_bill)
@@ -647,18 +766,32 @@ def add_multiple_bill():
     student_ids = request.get_json(True)['entry_ids']
     message = request.get_json(True)['message']
     fees = db.session.query(Fee).all()
-    sum_fees = 0
-    
-    for fee in fees:
-        sum_fees += fee.amount
 
     for student_id in student_ids:
+        student = db.session.query(Student).filter_by(student_id=student_id).one_or_none()
+        scholarship = None if not student.scholarship != 'None' else student.scholarship
+        discount = None if not scholarship else db.session.query(Scholarship).filter_by(description=scholarship).one_or_none()
+        sum_fees = 0
+    
+        for fee in fees:
+            amount = fee.amount
+
+            if fee.description.lower() == 'miscellaneous fee' and discount:
+                if discount.is_percent:
+                    amount = fee.amount - fee.amount * (discount.amount / 100)
+                else:
+                    amount = fee.amount - discount.amount
+            
+            sum_fees += amount
+
         new_bill = Bill(
             bill_id=shortuuid.uuid(),
             entry_date=datetime.now(),
             student_id=student_id,
             total_amount=sum_fees,
-            fees=[(fee.description, fee.amount) for fee in fees]
+            fees=[(fee.description, fee.amount) for fee in fees],
+            discounted=True if scholarship else False,
+            discount=scholarship
         )
 
         if (message):
@@ -719,11 +852,30 @@ def add_cashout():
 @admin.get('/get_bill_info')
 def get_bill_info():
     bill_id = request.args.get('bill_id')
+    student_id = request.args.get('student_id')
     bill_info = db.session.query(Bill).get(bill_id)
+
     balance = 0.0
 
     if bill_info.total_paid < bill_info.total_amount:
         balance = bill_info.total_amount - bill_info.total_paid
+
+    # Check if student has scholarship
+    scholarship = bill_info.discount
+    discount = None
+    discount_amount = 0
+        
+    if bill_info.discounted == 1:
+        # Check if the scholarship is in the list
+        discount = db.session.query(Scholarship).filter_by(description=scholarship).one_or_none()
+
+    if discount:
+        for fee in bill_info.fees:
+            if fee[0].lower() == 'miscellaneous fee':
+                if discount.is_percent:
+                    discount_amount = fee[1] * (discount.amount / 100)
+                else:
+                    discount_amount = discount.amount
 
     return {
         'entry_date': bill_info.entry_date,
@@ -734,14 +886,31 @@ def get_bill_info():
         'last_payment_date': bill_info.last_payment_date,
         'bill_id': bill_info.bill_id,
         'status': bill_info.status,
-        'balance': balance
+        'balance': balance,
+        'discount': {
+            'description': f'{scholarship} (less {'₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'})',
+            'amount': discount_amount
+        } if bill_info.discounted else None
     }
     
 
 @admin.post('/acknowledge_payment')
 def acknowledge_payment():
     amount = float(request.form.get('amount'))
+    student_id = request.args.get('student_id')
     bill_id = request.form.get('entry_id')
+    bill_info = db.session.query(Bill).get(bill_id)
+    student = db.session.query(Student).filter_by(student_id=student_id).one_or_none()
+    scholarship = None if not student else student.scholarship
+    discount = None if not scholarship else db.session.query(Scholarship).filter_by(description=scholarship).one()
+    discount_amount = 0
+
+    for fee in bill_info.fees:
+        if fee[0].lower() == 'miscellaneous fee' and discount:
+            if discount.is_percent:
+                discount_amount = fee[1] * (discount.amount / 100)
+            else:
+                discount_amount = discount.amount
 
     try:
         # Store payment info
@@ -767,7 +936,7 @@ def acknowledge_payment():
             balance = billing.total_amount - billing.total_paid
             
         db.session.commit()
-
+        
         return respond(message='Payment success!', html=render_template(
             os.path.join('mail_student_receipt.html'),
             student_name=f'{current_student.lastname}, {current_student.firstname} {current_student.middlename} ',
@@ -780,7 +949,12 @@ def acknowledge_payment():
             items=billing.fees,
             total=billing.total_amount,
             amount=billing.total_paid,
-            balance=balance
+            paid=amount,
+            balance=balance,
+            discount={
+                'description': f'{scholarship} (less {'₱' + str(round(discount.amount)) if not discount.is_percent else str(round(discount.amount)) + '%'})',
+                'amount': discount_amount
+            } if billing.discounted else None
         )
     )
     except Exception as e:

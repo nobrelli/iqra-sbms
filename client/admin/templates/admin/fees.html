@@ -22,14 +22,15 @@
   <div id="admin-panel">
     {{ sidebar('fees') }}
     <div id="admin-main">
-        <h1>Fees</h1>
+        <h1>Fees & Grants</h1>
         <div id="admin-main-contents">
             <div class="data-tables">
               <div class="data-table-wrapper">
                 <div id="action-buttons">
-                  <a href="#" class="modal-trigger" data-target="add-fee-modal" style="width: max-content">{{ add_icon }} Add fee</a>
-                  <!-- <a href="#" class="modal-trigger" data-target="add-bill-modal">{{ receipt_icon }} Create billing</a> -->
+                  <a href="#" class="modal-trigger" data-target="add-fee-modal">{{ add_icon }} Add fee</a>
+                  <a href="#" class="modal-trigger" data-target="add-discount-modal">{{ receipt_icon }} Add discount</a>
                 </div>
+                <h2 style="color: #494949">Fees</h2>
                 {% if fees|count == 0 %}
                   <p>No fees yet.</p>
                 {% else %}
@@ -59,6 +60,36 @@
                       </tbody>
                   </table>
                 {% endif %}
+                <h2 style="color: #494949; margin-top: 64px;">Discounts</h2>
+                {% if discounts|count == 0 %}
+                  <p>No discounts yet.</p>
+                {% else %}
+                  <table class="data-table" id="fees" style="display: table;">
+                      <thead>
+                          <th>Description</th>
+                          <th>Amount</th>
+                          <th>Actions</th>
+                      </thead>
+                      <tbody>
+                          {% for discount in discounts %}
+                              <tr>
+                                <td>{{ discount.description }}</td>
+                                <td>{{ discount.amount ~ '%' if discount.is_percent else discount.amount|apply_currency }}</td>
+                                <td>
+                                  <div>
+                                    <a href="#" class="modal-trigger" data-target="edit-discount-modal" data-entry="{{ discount.id }}">
+                                      {{ edit_icon }}
+                                    </a>
+                                    <a href="#" class="modal-trigger" data-target="delete-discount-modal" data-entry="{{ discount.id }}">
+                                      {{ delete_icon }}
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+                {% endif %}
               </div>
             </div>
         </div>
@@ -66,8 +97,11 @@
   </div>
 
   {{ form_modal('Add fee', 'add-fee-modal', add_fee_form) }}
+  {{ form_modal('Add discount', 'add-discount-modal', add_discount_form) }}
   {{ form_modal('Edit fee', 'edit-fee-modal', add_fee_form) }}
+  {{ form_modal('Edit discount', 'edit-discount-modal', add_discount_form) }}
   {{ confirm_modal('Confirm', 'delete-fee-modal', 'Are you sure to delete this fee?') }}
+  {{ confirm_modal('Confirm', 'delete-discount-modal', 'Are you sure to delete this discount?') }}
   {{ slot_modal('Create bill', 'add-bill-modal', '
   <div class="modal-step" data-step="1">
     <div id="student-search">

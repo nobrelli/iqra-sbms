@@ -10,7 +10,8 @@ from wtforms import (
     HiddenField,
     DateField,
     EmailField,
-    DecimalField
+    DecimalField,
+    BooleanField
 )
 from wtforms.validators import (
     DataRequired, 
@@ -64,6 +65,7 @@ class AddStudentForm(FlaskForm):
     status = SelectField('Status', validators=[DataRequired()], choices=['Regular', 'Irregular'])
     program = SelectField('Program', choices=[('', 'Select')], validate_choice=False)
     year = SelectField('Year', validators=[DataRequired()], choices=year_lvl)
+    scholarship = SelectField('Scholarship', choices=[('', 'Select')], validate_choice=False, default='')
     lastname = StringField('Last name', validators=[DataRequired()])
     firstname = StringField('First name', validators=[DataRequired()])
     middlename = StringField('Middle name')
@@ -145,3 +147,10 @@ class AddFeeForm(FlaskForm):
 class SettleForm(FlaskForm):
     amount = DecimalField('Amount', validators=[DataRequired(), NumberRange(50.0)])
     submit = SubmitField('Settle Bill')
+
+
+class AddDiscountForm(FlaskForm):
+    description = StringField('Description', validators=[DataRequired()])
+    is_percent = SelectField('Is percent?', choices=[(1, 'Yes'), (0, 'No')])
+    amount = DecimalField('Amount', validators=[DataRequired()])
+    submit = SubmitField('Submit')

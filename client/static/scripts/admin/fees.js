@@ -36,10 +36,21 @@ const evalYear = year => {
         '/admin/add_bill'
     )
 
+    const addDiscontModal = new FormModal(
+        'add-discount-modal', 
+        '/admin/add_discount'
+    )
+
     new FormModal(
         'edit-fee-modal', 
         '/admin/edit_fee',
         '/admin/get_fee_info'
+    )
+
+    new FormModal(
+        'edit-discount-modal', 
+        '/admin/edit_discount',
+        '/admin/get_discount_info'
     )
 
     new ConfirmModal('delete-fee-modal', async() => {
@@ -54,6 +65,23 @@ const evalYear = year => {
     
         if (result.success) {
             return ['Fee deleted.', true]
+        }
+    
+        return ['Cannot delete.', false]
+    })
+
+    new ConfirmModal('delete-discount-modal', async() => {
+        let response = await fetch('/admin/delete_discount', {
+            method: 'POST',
+            body: JSON.stringify({ 
+                entry_id: document.querySelector('#delete-discount-modal [name="entry_id"]').value
+            })
+        });
+        
+        let result = await response.json();
+    
+        if (result.success) {
+            return ['Discount deleted.', true]
         }
     
         return ['Cannot delete.', false]

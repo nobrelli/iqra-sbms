@@ -94,6 +94,10 @@
                                 <td>Status</td>
                                 <td><b>{{ student.status }}</b></td>
                             </tr>
+                            <tr>
+                                <td>Scholarship</td>
+                                <td><b>{{ student.scholarship or '-' }}</b></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -158,6 +162,7 @@
 </div>
 
 {{ slot_modal('View bill', 'settle-bill-modal', '
+<input type="hidden" id="student-id-hidden" value="{{ student.student_id }}" />
 <table id="student-info">
     <tbody>
         <tr>

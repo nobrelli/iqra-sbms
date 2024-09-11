@@ -2,7 +2,7 @@ from typing import List
 from dataclasses import dataclass
 from .app import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import JSON, Date, DateTime, ForeignKey, Uuid
+from sqlalchemy import JSON, Date, DateTime, ForeignKey, TEXT
 
 
 class Admin(db.Model):
@@ -109,6 +109,7 @@ class Student(db.Model):
     phone: Mapped[str] = mapped_column(db.String(15))
     email: Mapped[str] = mapped_column(db.String(100), nullable=True)
     semester: Mapped[str] = mapped_column(db.String(100))
+    scholarship: Mapped[str] = mapped_column(db.String(100), nullable=True)
     bills: Mapped[List['Bill']] = relationship(cascade='all, delete-orphan')
     
 
@@ -132,6 +133,8 @@ class Bill(db.Model):
     status: Mapped[str] = mapped_column(db.String(20), default='pending')
     fees: Mapped[JSON] = mapped_column(db.JSON)
     last_payment_date: Mapped[DateTime] = mapped_column(db.DateTime, nullable=True)
+    discounted: Mapped[bool] = mapped_column(db.Boolean, default=False)
+    discount: Mapped[str] = mapped_column(db.String(100), nullable=True)
     payments: Mapped[List['Payment']] = relationship(cascade='all, delete-orphan')
 
 
@@ -154,3 +157,12 @@ class Cashout(db.Model):
     amount: Mapped[float] = mapped_column(db.Float)
     timestamp: Mapped[DateTime] = mapped_column(db.DateTime)
     description: Mapped[str] = mapped_column(db.String(300))
+
+
+class Scholarship(db.Model):
+    __tablename__ = 'scholarships'
+
+    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
+    amount: Mapped[float] = mapped_column(db.Float)
+    is_percent: Mapped[bool] = mapped_column(db.Boolean)
+    description: Mapped[str] = mapped_column(db.String(150))

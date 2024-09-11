@@ -18,7 +18,8 @@ from ..forms import (
     AddSemesterForm,
     AddProgramSubjectForm,
     AddFeeForm,
-    SettleForm
+    SettleForm,
+    AddDiscountForm
 )
 from ..models import (
     Bill,
@@ -30,7 +31,8 @@ from ..models import (
     Semester,
     ProgramSubject,
     Student,
-    Message
+    Message,
+    Scholarship
 )
 from ..config import Config
 from ..app import db
@@ -157,14 +159,16 @@ def get_program(id):
 
 @admin.get('/fees')
 def fees():
-    form = AddFeeForm()
+    fee_form = AddFeeForm()
+    discount_form = AddDiscountForm()
     fees = db.session.query(Fee).all()
+    discounts = db.session.query(Scholarship).all()
     sum_fees = 0
 
     for fee in fees:
         sum_fees += fee.amount
 
-    return render_template('admin/fees.html', add_fee_form=form, fees=fees, sum_fees=sum_fees)
+    return render_template('admin/fees.html', add_fee_form=fee_form, add_discount_form=discount_form, fees=fees, discounts=discounts, sum_fees=sum_fees)
 
 
 @admin.get('/cashout')

@@ -53,6 +53,7 @@
                           <th>Gender</th>
                           <th>Program</th>
                           <th>Year level</th>
+                          <th>Scholarship</th>
                           <th>Status</th>
                           <th>Birthdate</th>
                           <th>Address</th>
@@ -74,6 +75,7 @@
                                 <td>{{ student.gender }}</td>
                                 <td>{{ student.program|parse_program }}</td>
                                 <td>{{ eval_year_lvl(student.year) }}</td>
+                                <td>{{ student.scholarship }}</td>
                                 <td>{{ student.status }}</td>
                                 <td>{{ student.birthdate.strftime('%b %d, %Y') }}</td>
                                 <td>{{ student.address }}</td>
@@ -129,6 +131,7 @@
           </tr>
         </tfoot>
       </table>
+      <p style="color: #5f5f5f">Discounts for students with scholarships are applied after billing.</p>
       <textarea class="form-input" id="message-box" placeholder="Message (optional)" style="margin-top: 12px"></textarea>
       <input type="button" value="Create" id="create-bill" disabled />
     {% endif %}
