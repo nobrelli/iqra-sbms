@@ -893,7 +893,7 @@ def get_bill_info():
         'status': bill_info.status,
         'balance': balance,
         'discount': {
-            'description': f'{scholarship} (less {text_amount})',
+            'description': scholarship,
             'amount': discount_amount
         } if bill_info.discounted else None
     }
@@ -962,7 +962,7 @@ def acknowledge_payment():
             paid=amount,
             balance=balance,
             discount={
-                'description': f'{scholarship} (less {text_amount})',
+                'description': scholarship,
                 'amount': discount_amount
             } if billing.discounted else None
         )
