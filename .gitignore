@@ -6,3 +6,5 @@ server/migrations/
 *.bak
 *.csv
 server/system/config.py
+
+instance

@@ -38,17 +38,9 @@ A student billing management system built using the Flask web framework.
 ### Configure XAMPP
 
 1. Start the Apache and MySQL servers from the XAMPP Control Panel.
-
-![Starting Apache and MySQL servers in XAMPP](images/img1.png)
-
 2. Navigate to the MySQL Admin [phpMyAdmin](http://localhost/phpmyadmin/)
 3. Create a new database
-
-![Click New](images/img2.png)
-
 4. Name the database **sbms**
-
-![Naming database](images/img3.png)
 
 ### Configure Gmail
 
@@ -69,8 +61,6 @@ A student billing management system built using the Flask web framework.
 2. Check your email for activation instructions.
 3. Login to your Stripe account and navigate [here](https://dashboard.stripe.com/test/apikeys) to view your API keys.
 4. Click the "Publishable" and "Secret" keys to copy them and paste them somewhere else.
-
-![Copying API keys](images/img4.png)
 
 ### Setup and Run
 
@@ -144,19 +134,11 @@ or
 
 Hold `Ctrl` and click the link to view the application. **NOTE:** *Port number may differ. Mine, in this case, is **5000***
 
-![Launch web app](images/img7.png)
-
 ### Create a new admin
 
 1. Navigate again to [phpMyAdmin](http://localhost/phpmyadmin)
 2. Click the **admin** table
-
-![Admin table](images/img5.png)
-
 3. In the **admin** table view, go to the **SQL** tab
-
-![SQL tab](images/img6.png)
-
 4. Paste the code below into the SQL editor.
 
 ```
