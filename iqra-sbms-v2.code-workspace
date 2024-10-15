@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "client"
+		},
+		{
+			"path": "server"
+		},
+		{
+			"path": "app_data"
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "client\\node_modules\\typescript\\lib",
+		"typescript.tsserver.log": "verbose",
+	}
+}

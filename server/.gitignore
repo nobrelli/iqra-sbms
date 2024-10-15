@@ -1,0 +1,10 @@
+.env-dev
+.env-prod
+.env-test
+
+.venv/*
+instance/*
+flask_session/*
+.pytest_cache/*
+.ruff_cache
+**/__pycache__/

@@ -1,0 +1,12 @@
+@media print {
+    .modal {
+        box-shadow: none !important;
+        border: none;
+        background-color: white;
+        padding: 0;
+    }
+
+    .modal h2, .modal button, .modalClose {
+        display: none !important;
+    }
+}

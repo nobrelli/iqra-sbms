@@ -1,0 +1,37 @@
+[
+    {
+        "description": "Sibling",
+        "amount": 1440,
+        "is_percent": 0
+    },
+    {
+        "description": "Dean's Lister",
+        "amount": 900,
+        "is_percent": 0
+    },
+    {
+        "description": "Honor Student",
+        "amount": 100,
+        "is_percent": 1
+    },
+    {
+        "description": "Ma'am Okile Scholar",
+        "amount": 1800,
+        "is_percent": 0
+    },
+    {
+        "description": "Double Orphan",
+        "amount": 100,
+        "is_percent": 1
+    },
+    {
+        "description": "Orphan",
+        "amount": 900,
+        "is_percent": 0
+    },
+    {
+        "description": "President's Scholar",
+        "amount": 100,
+        "is_percent": 1
+    }
+]
