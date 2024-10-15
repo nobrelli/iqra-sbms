@@ -38,10 +38,10 @@ function RootRouteComponent() {
   return (
     <>
       <Outlet />
-      <Suspense>
+      {/* <Suspense>
         <ReactQueryDevtools buttonPosition="bottom-left" />
         <TanStackRouterDevtools position="bottom-right" />
-      </Suspense>
+      </Suspense> */}
     </>
   )
 }
