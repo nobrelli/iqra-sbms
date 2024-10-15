@@ -7,25 +7,24 @@ import '@mantine/dates/styles.css'
 import '@mantine/notifications/styles.css'
 import '@mantine/nprogress/styles.css'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
-import React, { Suspense } from 'react'
 
-const TanStackRouterDevtools =
-  import.meta.env.NODE_ENV === 'production'
-    ? () => null
-    : React.lazy(() =>
-      import('@tanstack/router-devtools').then(res => ({
-        default: res.TanStackRouterDevtools,
-      }))
-    )
+// const TanStackRouterDevtools =
+//   import.meta.env.NODE_ENV === 'production'
+//     ? () => null
+//     : React.lazy(() =>
+//       import('@tanstack/router-devtools').then(res => ({
+//         default: res.TanStackRouterDevtools,
+//       }))
+//     )
 
-const ReactQueryDevtools =
-  import.meta.env.NODE_ENV === 'production'
-    ? () => null
-    : React.lazy(() =>
-      import('@tanstack/react-query-devtools').then(res => ({
-        default: res.ReactQueryDevtools,
-      }))
-    )
+// const ReactQueryDevtools =
+//   import.meta.env.NODE_ENV === 'production'
+//     ? () => null
+//     : React.lazy(() =>
+//       import('@tanstack/react-query-devtools').then(res => ({
+//         default: res.ReactQueryDevtools,
+//       }))
+//     )
 
 export const Route = createRootRouteWithContext<RouteContextProps>()({
   component: RootRouteComponent,
