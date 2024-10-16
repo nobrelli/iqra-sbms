@@ -26,6 +26,7 @@ class Config(object):
         self.JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
         self.JWT_TOKEN_LOCATION = "cookies"
         self.JWT_COOKIE_SECURE = False
+        self.JWT_COOKIE_SAMESITE = "None"
         self.JWT_ACCESS_COOKIE_NAME = os.getenv("JWT_ACCESS_COOKIE_NAME")
         self.JWT_ACCESS_TOKEN_EXPIRES = False
         self.JWT_COOKIE_CSRF_PROTECT = True
