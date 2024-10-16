@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 
 from src.helpers import get_full_path
+from sqlalchemy.engine.url import URL
 
 
 # You must extend this
@@ -58,9 +59,18 @@ class Config(object):
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> str:
         mode = os.getenv("MODE")
-
+        
         if mode == "production":
-            return f"mysql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+            url = URL.create(
+                'mysql+pymysql',
+                self.DB_USER,
+                self.DB_PASS,
+                self.DB_HOST,
+                self.DB_PORT,
+                self.DB_NAME,
+            )
+            
+            return url
         elif mode == "development":
             return f"sqlite:///{self.DB_NAME}.db"
         else:

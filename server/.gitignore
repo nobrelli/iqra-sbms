@@ -8,3 +8,5 @@ flask_session/*
 .pytest_cache/*
 .ruff_cache
 **/__pycache__/
+
+*.pem

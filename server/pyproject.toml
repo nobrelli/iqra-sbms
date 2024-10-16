@@ -21,6 +21,8 @@ freezegun = "^1.5.1"
 flask-migrate = "^4.0.7"
 poetry = "^1.8.3"
 gunicorn = "^23.0.0"
+pymysql = "^1.1.1"
+cryptography = "^43.0.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
@@ -69,8 +71,8 @@ ignore = ["ANN101"]
 
 [tool.poe.tasks]
 run-dev = "poetry run python run.py development"
+run-prod = "poetry run python run.py production"
 run-dev-flask = "poetry run python -m flask run --host=0.0.0.0 --port=5001 --debug"
-run-prod = "gunicorn -w 4 wsgi:app"
 test = "pytest ./src/tests --import-mode=append --order-scope=session -v -s"
 clean = "poetry run python scripts/cleanup.py"
 lint = "ruff format"

@@ -1,9 +1,9 @@
 from datetime import date, datetime, timezone
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.types import JSON, Date, DateTime, String
+from sqlalchemy.types import Date, DateTime, String, JSON
 
 from .app import db
 from .id import ID
@@ -33,14 +33,14 @@ class Admin(db.Model, UpdatedMixin):
 class Fee(db.Model, UpdatedMixin):
     __tablename__ = "fees"
 
-    description: Mapped[str] = mapped_column(index=True)
+    description: Mapped[str] = mapped_column(String(200), index=True)
     amount: Mapped[float]
 
 
 class Discount(db.Model, UpdatedMixin):
     __tablename__ = "discounts"
 
-    description: Mapped[str] = mapped_column(index=True)
+    description: Mapped[str] = mapped_column(String(200), index=True)
     amount: Mapped[float]
     is_percent: Mapped[bool]
     valid_from: Mapped[Optional[date]] = mapped_column(
@@ -57,9 +57,9 @@ class Bill(db.Model, UpdatedMixin):
     total_paid: Mapped[float] = mapped_column(default=0.00)
     due_date: Mapped[date] = mapped_column(Date)
     status: Mapped[str] = mapped_column(String(20), default="unpaid")
-    fees: Mapped[list[str]] = mapped_column(JSON)
-    discounts: Mapped[Optional[list[str]]] = mapped_column(JSON)
-    remarks: Mapped[Optional[str]]
+    fees: Mapped[Mapping] = mapped_column(JSON)
+    discounts: Mapped[Optional[Mapping]] = mapped_column(JSON)
+    remarks: Mapped[Optional[str]] = mapped_column(String(300))
 
     payments: Mapped[list["Payment"]] = relationship(
         back_populates="bill", 
@@ -74,7 +74,7 @@ class Payment(db.Model, BaseSharedMixin):
     bill_id = mapped_column(ForeignKey("bills.id"))
     amount: Mapped[float]
     method: Mapped[str] = mapped_column(String(64), server_default="cash")
-    remarks: Mapped[Optional[str]]
+    remarks: Mapped[Optional[str]] = mapped_column(String(300))
 
     bill: Mapped["Bill"] = relationship(back_populates="payments")
     receipt: Mapped["Receipt"] = relationship(
@@ -86,7 +86,7 @@ class Cashout(db.Model, BaseSharedMixin):
     __tablename__ = "outflows"
 
     amount: Mapped[float]
-    description: Mapped[str] = mapped_column(index=True)
+    description: Mapped[str] = mapped_column(String(300), index=True)
 
 
 class Receipt(db.Model, BaseSharedMixin):

@@ -1,6 +1,6 @@
 import multiprocessing
 
-wsgi_app = 'run:app'
+wsgi_app = 'wsgi:app'
 workers = multiprocessing.cpu_count()
 threads = 2
 worker_class = 'gthread'

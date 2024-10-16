@@ -1,11 +1,23 @@
+import os
 from datetime import timedelta
 
+from src.helpers import get_full_path
 from src.config import Config
 
 
 class ProductionConfig(Config):
     def __init__(self, env_file: str) -> None:
         super().__init__(env_file)
+        
+        self.DB_CERT = os.getenv("DB_CERT")
+        self.SQLALCHEMY_ENGINE_OPTIONS = {
+            "connect_args": {
+                "ssl": {
+                    "ca": self.DB_CERT, 
+                    "ssl_version": 2
+                }
+            }
+        }
 
         self.JWT_COOKIE_SECURE = True
         self.JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
