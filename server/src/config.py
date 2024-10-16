@@ -35,17 +35,7 @@ class Config(object):
 
         self.CORS_ORIGINS = "*"  # better change this
         self.CORS_METHODS = ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"]
-        self.CORS_ALLOW_HEADERS = [
-            "Accept",
-            "Accept-Language",
-            "Access-Control-Allow-Origin",
-            "Content-Language",
-            "Content-Type",
-            "Range",
-            "Referer",
-            "User-Agent",
-            "X-Csrf-Token",
-        ]
+        self.CORS_ALLOW_HEADERS = "*"
         self.CORS_SUPPORTS_CREDENTIALS = True
 
         self.COMPRESS_ZSTD_LEVEL = 18
