@@ -46,7 +46,7 @@ def login(body: Login) -> Response:
         )
 
         set_access_cookies(response, access_token)
-
+        print(response.headers)
         return response
 
     return ResponseModel(meta=meta(message="Wrong credentials.")), 400
