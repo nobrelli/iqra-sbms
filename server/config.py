@@ -21,8 +21,11 @@ class ProductionConfig(Config):
             }
         }
 
+        self.JWT_COOKIE_DOMAIN = os.getenv('CLIENT_SITE')
         self.JWT_COOKIE_SECURE = True
         self.JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
+        
+        self.CORS_ORIGINS = os.getenv('CLIENT_SITE')
 
 
 class DevelopmentConfig(Config):

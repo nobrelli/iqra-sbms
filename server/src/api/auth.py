@@ -86,7 +86,7 @@ def change_password(body: ChangePassword) -> None:
 
 
 @auth.delete("/logout")
-@jwt_required()
+@jwt_required(skip_revocation_check=True)
 @validate()
 def logout() -> Response:
     from ..models import TokenBlacklist
