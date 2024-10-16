@@ -11,6 +11,8 @@ class ProductionConfig(Config):
         
         self.DB_CERT = os.getenv("DB_CERT")
         self.SQLALCHEMY_ENGINE_OPTIONS = {
+            "pool_recycle": 3600,
+            "pool_pre_ping": True,
             "connect_args": {
                 "ssl": {
                     "ca": self.DB_CERT, 

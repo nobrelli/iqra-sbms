@@ -25,6 +25,7 @@ export const Header = ({ burger }: { burger: ReactElement }) => {
     logoutAdmin(undefined, {
       onSettled: async () => {
         setIsAuth(false)
+        await queryClient.cancelQueries()
         queryClient.clear()
         await router.invalidate()
         navigate({ to: '/login' })
