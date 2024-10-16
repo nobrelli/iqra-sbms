@@ -9,7 +9,7 @@ match mode:
     case "development":
         config = DevelopmentConfig(get_full_path(".env-dev"))
     case "production":
-        config = ProductionConfig(get_full_path(".env-prod"))
+        config = ProductionConfig(get_full_path(".env"))
     case _:
         config = Config()
 
