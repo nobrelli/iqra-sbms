@@ -15,6 +15,9 @@ class Config(object):
         self.TESTING = False
 
         self.APP_INSTANCE_DIR = get_full_path(os.getenv("APP_INSTANCE_DIR"))
+        self.APP_HOST = os.getenv("APP_HOST")
+        self.APP_PORT = os.getenv("APP_PORT")
+        
         self.DATA_DIR = get_full_path('data')
 
         self.DB_HOST = os.getenv("DB_HOST")

@@ -13,8 +13,12 @@ if __name__ == "__main__":
         case "development":
             config = DevelopmentConfig(get_full_path(".env-dev"))
         case "production":
-            config = ProductionConfig(get_full_path(".env-prod"))
+            config = ProductionConfig(get_full_path(".env"))
         case _:
             config = Config()
 
-    app(config).run(debug=mode != "production", host="0.0.0.0", port=5001)
+    app(config).run(
+        debug=mode != "production", 
+        host=config.APP_HOST, 
+        port=config.APP_PORT
+    )

@@ -56,6 +56,8 @@ def build_app(config: Config, test_mode: bool = False) -> Flask:
 
         db.create_all()
         _populate_db(config)
+        
+        app.logger.info('Database initialized!')
 
     # Init plugins
     jwt.init_app(app)
