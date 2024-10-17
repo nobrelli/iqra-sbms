@@ -37,6 +37,7 @@ class DevelopmentConfig(Config):
         
         self.SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+        self.JWT_COOKIE_SAMESITE = "Lax"
         self.JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=30)
 
 
