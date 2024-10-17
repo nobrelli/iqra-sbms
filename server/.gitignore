@@ -1,6 +1,5 @@
-.env-dev
-.env-prod
-.env-test
+.env
+.env-*
 
 .venv/*
 instance/*
