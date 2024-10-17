@@ -36,7 +36,7 @@ def build_app(config: Config, test_mode: bool = False) -> Flask:
 
     # Init db
     db_uri = app.config.get("SQLALCHEMY_DATABASE_URI")
-
+    
     if not db_uri:
         raise ValueError("Database URI is not specified.")
 

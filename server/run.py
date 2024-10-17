@@ -1,6 +1,6 @@
 import sys
 
-from config import Config, DevelopmentConfig, ProductionConfig
+from config import DevelopmentConfig, ProductionConfig
 from src.app import build_app as app
 from src.helpers import get_full_path
 
@@ -9,13 +9,10 @@ if __name__ == "__main__":
     mode = args[0] if len(args) > 0 else None
     config = None
 
-    match mode:
-        case "development":
-            config = DevelopmentConfig(get_full_path(".env-dev"))
-        case "production":
-            config = ProductionConfig(get_full_path(".env"))
-        case _:
-            config = Config()
+    if mode == 'production':
+        config = ProductionConfig(get_full_path(".env"))
+    else:
+        config = DevelopmentConfig(get_full_path(".env-dev"))
 
     app(config).run(
         debug=mode != "production", 

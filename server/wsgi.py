@@ -1,16 +1,7 @@
-from config import Config, DevelopmentConfig, ProductionConfig
-from src.app import build_app
+from config import ProductionConfig
+from src.app import build_app as app
 from src.helpers import get_full_path
 
-mode = "production"
-config = None
-
-match mode:
-    case "development":
-        config = DevelopmentConfig(get_full_path(".env-dev"))
-    case "production":
-        config = ProductionConfig(get_full_path(".env"))
-    case _:
-        config = Config()
-
-app = build_app(config)
+if __name__ == "__main__":
+    config = ProductionConfig(get_full_path(".env"))
+    app(config).run(debug=False, host=config.APP_HOST)

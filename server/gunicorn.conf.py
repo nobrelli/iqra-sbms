@@ -1,6 +1,11 @@
-import multiprocessing
+import multiprocessing, os
+from dotenv import load_dotenv
 
-wsgi_app = 'run:app'
+# Production only
+load_dotenv('.env')
+
+wsgi_app = 'wsgi:app'
+bind = f'{os.getenv('APP_HOST')}:{os.getenv('APP_PORT')}'
 workers = multiprocessing.cpu_count()
 threads = 2
 worker_class = 'gthread'
