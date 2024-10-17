@@ -9,8 +9,8 @@ load_dotenv('.env')
 
 wsgi_app = 'wsgi'
 bind = f"{os.getenv('APP_HOST', DEFAULT_HOST)}:{os.getenv('APP_PORT', DEFAULT_PORT)}"
-workers = multiprocessing.cpu_count()
-threads = 2
+workers = os.getenv('APP_WORKERS_COUNT')
+threads = os.getenv('APP_THREADS_COUNT')
 worker_class = 'gthread'
 log_level = 'info'
 reload = True
