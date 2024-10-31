@@ -1,0 +1,6 @@
+app_data
+desktop
+server_test
+*.code-workspace
+.vercel
+.vscode

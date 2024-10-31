@@ -1,0 +1,12 @@
+.cardTitle {
+  font-size: var(--mantine-font-size-sm);
+  text-transform: uppercase;
+  margin-bottom: var(--mantine-spacing-md);
+  color: light-dark(var(--mantine-color-gray-6), var(--mantine-color-gray-6));
+}
+
+.cardValue {
+  font-size: var(--mantine-h1-font-size);
+  color: light-dark(var(--mantine-color-gray-8), var(--mantine-color-gray-0));
+  font-weight: 700;
+}

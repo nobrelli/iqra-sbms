@@ -1,0 +1,20 @@
+.table {
+    overflow: hidden;
+}
+
+.tableHead {
+    background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+    color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-white));
+}
+
+.tableBodyRow:hover {
+    background-color: light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6));
+    transition-duration: 150ms;
+    transition-property: background-color;
+    transition-timing-function: ease;
+}
+
+.actionButtonContainer {
+    gap: 0.5rem;
+    display: flex;
+}

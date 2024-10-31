@@ -1,0 +1,16 @@
+.flaskenv
+.env
+.env-*
+gunicorn.conf.py
+poetry.lock
+pyproject.toml
+
+.vercel
+.vscode
+.venv
+migrations
+instance
+flask_session
+.pytest_cache
+.ruff_cache
+**/__pycache__/

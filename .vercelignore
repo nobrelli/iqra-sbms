@@ -1,0 +1,7 @@
+.vscode
+app_data
+desktop
+server_test
+*.code-workspace
+README.md
+build.local.py
