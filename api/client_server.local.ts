@@ -1,6 +1,4 @@
-// Vercel serverless function
-
-import fastify, { FastifyReply, FastifyRequest } from 'fastify'
+import fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import * as path from 'node:path'
 
@@ -17,9 +15,10 @@ app.get('/*', async (request, reply) => {
     return reply.sendFile('index.html')
 })
 
-const handler = async (request: FastifyRequest, reply: FastifyReply) => {
-    await app.ready()
-    app.server.emit('request', request, reply)
-}
-
-export default handler
+app.listen({ port: 5173 }, (err, address) => {
+    if (err) {
+        console.error(err)
+        process.exit(1)
+    }
+    console.log(`Client server listening at ${address}`)
+})

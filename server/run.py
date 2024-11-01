@@ -16,7 +16,7 @@ else:
 
 if __name__ == '__main__':
     app().run(
-        host=getenv('APP_HOST'), 
-        port=getenv('APP_PORT'),
+        host=getenv('API_HOST'), 
+        port=getenv('API_PORT'),
         debug=(mode == "dev")
     )

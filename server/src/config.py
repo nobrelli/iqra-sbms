@@ -5,8 +5,8 @@ ENV = getenv("ENV")
 DEBUG = bool(getenv("APP_DEBUG"))
 TESTING = bool(getenv("APP_TESTING"))
 
-APP_HOST = getenv("APP_HOST")
-APP_PORT = getenv("APP_PORT")
+API_HOST = getenv("API_HOST")
+API_PORT = getenv("API_PORT")
 
 DATA_DIR = getenv("DATA_DIR")
 

@@ -9,7 +9,7 @@ DEFAULT_PORT = 8000
 load_dotenv('.env')
 
 wsgi_app = 'run'
-bind = f"{getenv('APP_HOST', DEFAULT_HOST)}:{getenv('APP_PORT', DEFAULT_PORT)}"
+bind = f"{getenv('API_HOST', DEFAULT_HOST)}:{getenv('API_PORT', DEFAULT_PORT)}"
 workers = multiprocessing.cpu_count()
 threads = 4
 worker_class = 'gthread'

@@ -155,7 +155,7 @@ shutil.copy(f"{SERVER_DIR}/.env-default", env_file)
 
 # Edit env file
 for key, value in env.items():
-    if key in {"mode", "api_host", "api_endpoint", "api_port"}:
+    if key in {"mode", "api_host", "api_endpoint"}:
         continue
     
     dotenv.set_key(env_file, key.upper(), str(value))
