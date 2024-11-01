@@ -1,16 +1,18 @@
+import os
 from datetime import datetime, timedelta, timezone
 
-from flask import Blueprint, Response, current_app, request
+from flask import Blueprint, Response, current_app, request, render_template
 from flask_jwt_extended import (
     create_access_token,
     get_jwt,
     get_jwt_identity,
-    set_access_cookies
+    set_access_cookies,
 )
 from flask_pydantic import validate
 from sqlalchemy import select
 
-from ..app import db, jwt
+from ..app import jwt
+from ..database import db
 from ..models import Admin
 from ..schemas.base import MetaModel as meta
 from ..schemas.base import ResponseModel
@@ -23,7 +25,7 @@ from .student import student
 from .cashout import cashout
 from .utils import utils
 
-api = Blueprint("api", __name__)
+api = Blueprint("api", __name__, template_folder=os.path.dirname(__file__))
 
 api.register_blueprint(auth, url_prefix="/auth")
 api.register_blueprint(student, url_prefix="/students")
@@ -39,13 +41,13 @@ LOGOUT_ROUTE = "logout"
 
 @api.before_request
 def preflight() -> Response:
-    if request.method.lower() == 'options':
+    if request.method.lower() == "options":
         return Response()
-    
 
-@api.route('/')
+
+@api.route("/")
 def index() -> Response:
-    return 'Welcome to IQRA SBMS API Server!'
+    return render_template("welcome.html", url_map=current_app.url_map)
 
 
 @jwt.user_identity_loader

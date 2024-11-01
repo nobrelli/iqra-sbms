@@ -1,11 +1,11 @@
 from datetime import date, datetime, timezone
-from typing import Any, Mapping, Optional
+from typing import Mapping, Optional
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Date, DateTime, String, JSON
 
-from .app import db
+from .database import db
 from .id import ID
 
 class BaseSharedMixin:

@@ -7,11 +7,11 @@ from dotenv import load_dotenv
 from flask import Flask
 from flask.testing import FlaskClient, FlaskCliRunner
 
-from ..app import build_app, db
+from ..database import db
+from ..app import build_app
 from ..models import Bill, Cashout, Discount
 
 load_dotenv(".env-test")
-
 
 TEST_STUDENT_ID = "2024100012"
 TEST_FEES = [

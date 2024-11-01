@@ -2,7 +2,7 @@ import pytest
 from flask import Flask
 from sqlalchemy import select
 
-from ...app import db
+from ...database import db
 from ...models import Bill
 from ..conftest import TEST_STUDENT_ID, TEST_SUM
 

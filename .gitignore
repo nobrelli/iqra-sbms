@@ -1,6 +1,8 @@
 app_data
 desktop
+node_modules
 server_test
 *.code-workspace
 .vercel
 .vscode
+instance

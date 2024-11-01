@@ -11,9 +11,8 @@ from flask_jwt_extended import (
 from flask_pydantic import validate
 from sqlalchemy import select
 
-from ..app import db
+from ..database import db
 from ..helpers import hash_password, verify_password
-from ..models import Admin
 from ..schemas.auth import Login, ChangePassword
 from ..schemas.base import MetaModel as meta
 from ..schemas.base import ResponseModel
@@ -24,9 +23,11 @@ auth = Blueprint("auth", __name__)
 @auth.post("/login")
 @validate()
 def login(body: Login) -> Response:
+    from ..models import Admin
+    
     admin_id = nh3.clean_text(body.admin_id)
     password = nh3.clean_text(body.password)
-
+    
     admin = db.session.scalar(select(Admin).filter_by(admin_id=admin_id))
 
     if admin is None:
@@ -62,6 +63,8 @@ def ping() -> Response:
 @jwt_required()
 @validate()
 def change_password(body: ChangePassword) -> None:
+    from ..models import Admin
+    
     identity = get_jwt_identity()
     admin = db.session.get(Admin, identity)
 

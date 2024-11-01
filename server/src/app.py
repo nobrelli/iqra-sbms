@@ -1,30 +1,27 @@
+import tempfile
+import logging
 from os import getenv
-from flask import Flask, json, Config, Response, redirect, send_from_directory
+from os.path import join, abspath, dirname
+from flask import Flask, json, Config
 from flask_compress import Compress
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import URL
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import URL, select
 
 
-class Base(DeclarativeBase):
-    def as_dict(self) -> dict:
-        return {c.name: str(getattr(self, c.name)) for c in self.__table__.columns}
-
-
-db = SQLAlchemy(model_class=Base, disable_autonaming=True)
 migrate = Migrate()
 jwt = JWTManager()
 cors = CORS()
 compress = Compress()
+dir = dirname(abspath(__file__))
 
 
 def build_app(*args) -> Flask:  # noqa: ANN002
-    app = Flask(__name__, static_url_path='/')
-    app.config.from_pyfile("config.py")
-    app.static_folder = app.config.get('DIST_DIR')
+    app = Flask(__name__)
+    app.logger.setLevel(logging.DEBUG)  # Enable logging
+    app.url_map.strict_slashes = False
+    app.config.from_pyfile(join(dir, "config.py"))
 
     # Init plugins
     jwt.init_app(app)
@@ -32,12 +29,14 @@ def build_app(*args) -> Flask:  # noqa: ANN002
     compress.init_app(app)
 
     init_db(app)
-    init_api(app)
+    init_endpoints(app)
 
     return app
 
 
 def init_db(app: Flask) -> None:
+    from .database import db
+
     env = getenv("ENV")
 
     app.config.update({"SQLALCHEMY_TRACK_MODIFICATIONS": False})
@@ -46,13 +45,20 @@ def init_db(app: Flask) -> None:
         app.config.update({"SQLALCHEMY_DATABASE_URI": uri})
 
     if env == "prod":
+        cert_content = getenv("DB_CERT")
+        temp_cert_file_path = None
+
+        with tempfile.NamedTemporaryFile(delete=False) as temp_cert_file:
+            temp_cert_file.write(cert_content.encode())
+            temp_cert_file_path = temp_cert_file.name
+
         app.config.update(
             {
                 "SQLALCHEMY_ENGINE_OPTIONS": {
                     "pool_recycle": 3600,
                     "pool_pre_ping": True,
                     "connect_args": {
-                        "ssl": {"ca": app.config.get("DB_CERT"), "ssl_version": 2}
+                        "ssl": {"ca": temp_cert_file_path, "ssl_version": 2}
                     },
                 }
             }
@@ -94,33 +100,26 @@ def init_db(app: Flask) -> None:
 
         db.create_all()
         seed_db(app.config)
-
         app.logger.info("Database initialized!")
 
 
-def init_api(app: Flask) -> None:
+def init_endpoints(app: Flask) -> None:
     from .api import api
-
-    @app.route('/')
-    def index() -> Response:
-        return send_from_directory(app.static_folder, "index.html")
-        # return redirect("/app", 301)
 
     app.register_blueprint(api, url_prefix="/api/v2")
 
 
 def seed_db(config: Config) -> None:
-    from sqlalchemy import select
-
     from .helpers import hash_password
     from .models import Admin, Discount, Fee
     from .schemas.discount import MakeDiscount
     from .schemas.fee import MakeFee
+    from .database import db
 
     # Create admin
     admin_id = config.get("ADMIN_ID")
     admin_pass = config.get("ADMIN_PASS")
-    data_dir = config.get("DATA_DIR")
+    data_dir = join(dir, "..", config.get("DATA_DIR"))
 
     admin_exists = db.session.scalar(select(Admin).filter_by(admin_id=admin_id))
 

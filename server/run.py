@@ -15,4 +15,8 @@ else:
     load_dotenv(".env")
 
 if __name__ == '__main__':
-    app().run(host=getenv('APP_HOST'), port=getenv('APP_PORT'))
+    app().run(
+        host=getenv('APP_HOST'), 
+        port=getenv('APP_PORT'),
+        debug=(mode == "dev")
+    )

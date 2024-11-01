@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import select
 
-from ...app import db
+from ...database import db
 from ...models import Fee
 
 TEST_FEE_DESC = "Registration Fee"

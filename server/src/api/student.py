@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_pydantic import validate
 from sqlalchemy import func, select
 
-from ..app import db
+from ..database import db
 from ..models import Bill
 from ..helpers import api_get, parse_student_info_from_api
 from ..schemas.base import MetaModel as meta

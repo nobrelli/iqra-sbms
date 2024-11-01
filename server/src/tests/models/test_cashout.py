@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import select
 
-from ...app import db
+from ...database import db
 from ...models import Cashout
 
 TEST_AMT = 1000.00

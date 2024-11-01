@@ -3,7 +3,7 @@ import os
 import pytest
 from sqlalchemy import select
 
-from ...app import db
+from ...database import db
 from ...helpers import hash_password
 from ...models import Admin
 

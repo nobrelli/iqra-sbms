@@ -1,6 +1,5 @@
 from os import getenv
 from datetime import timedelta
-from src.helpers import get_full_path
 
 ENV = getenv("ENV")
 DEBUG = bool(getenv("APP_DEBUG"))
@@ -9,8 +8,7 @@ TESTING = bool(getenv("APP_TESTING"))
 APP_HOST = getenv("APP_HOST")
 APP_PORT = getenv("APP_PORT")
 
-DIST_DIR = get_full_path(getenv("DIST_DIR"))
-DATA_DIR = get_full_path(getenv("DATA_DIR"))
+DATA_DIR = getenv("DATA_DIR")
 
 DB_HOST = getenv("DB_HOST")
 DB_PORT = getenv("DB_PORT")
@@ -25,7 +23,9 @@ JWT_COOKIE_SECURE = ENV == "prod"
 JWT_COOKIE_SAMESITE = "None" if ENV == "prod" else "Strict"
 JWT_COOKIE_DOMAIN = getenv("JWT_COOKIE_DOMAIN")
 JWT_ACCESS_COOKIE_NAME = getenv("JWT_ACCESS_COOKIE_NAME")
-JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(getenv("JWT_ACCESS_TOKEN_EXPIRES")))
+JWT_ACCESS_TOKEN_EXPIRES = timedelta(
+    minutes=int(getenv("JWT_ACCESS_TOKEN_EXPIRES", 30))
+)
 JWT_COOKIE_CSRF_PROTECT = True
 JWT_ACCESS_CSRF_COOKIE_NAME = getenv("JWT_ACCESS_CSRF_COOKIE_NAME")
 JWT_SESSION_COOKIE = False

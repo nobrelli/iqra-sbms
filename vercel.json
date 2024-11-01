@@ -1,15 +1,16 @@
 {
+    "$schema": "https://openapi.vercel.sh/vercel.json",
     "version": 2,
-    "builds": [
-        {
-            "src": "./server/vercel.py",
-            "use": "@vercel/python"
-        }
+    "rewrites": [
+        { "source": "/api/v2(.*)", "destination": "/api/api_server" },
+        { "source": "/(.*)", "destination": "/api/client_server" }
     ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "./server/vercel.py"
+    "functions": {
+        "api/api_server.py": {
+            "maxDuration": 60,
+            "memory": 1024
         }
-    ]
+    },
+    "outputDirectory": ".",
+    "regions": ["hkg1"]
 }

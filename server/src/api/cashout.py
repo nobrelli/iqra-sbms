@@ -3,7 +3,7 @@ from flask_jwt_extended import jwt_required
 from flask_pydantic import validate
 from sqlalchemy import select, or_
 
-from ..app import db
+from ..database import db
 from ..models import Cashout
 from ..schemas.base import MetaModel as meta, PaginatedQuery
 from ..schemas.base import ResponseModel

@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "iqra-sbms"
+name = "iqra-sbms-api-server"
 version = "0.1.0"
 description = "Student Billing Management System"
-authors = ["Your Name <you@example.com>"]
+authors = ["Ryu Rabino <ryuedwards@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"

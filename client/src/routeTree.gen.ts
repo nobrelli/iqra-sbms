@@ -27,11 +27,13 @@ import { Route as UserBillsMakeImport } from './routes/_user/bills_.make'
 // Create/Update Routes
 
 const ReceiptRoute = ReceiptImport.update({
+  id: '/receipt',
   path: '/receipt',
   getParentRoute: () => rootRoute,
 } as any)
 
 const LoginRoute = LoginImport.update({
+  id: '/login',
   path: '/login',
   getParentRoute: () => rootRoute,
 } as any)
@@ -42,46 +44,55 @@ const UserRoute = UserImport.update({
 } as any)
 
 const UserIndexRoute = UserIndexImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserStudentsRoute = UserStudentsImport.update({
+  id: '/students',
   path: '/students',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserFeesRoute = UserFeesImport.update({
+  id: '/fees',
   path: '/fees',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserDiscountsRoute = UserDiscountsImport.update({
+  id: '/discounts',
   path: '/discounts',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserCashoutRoute = UserCashoutImport.update({
+  id: '/cashout',
   path: '/cashout',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserBillsRoute = UserBillsImport.update({
+  id: '/bills',
   path: '/bills',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserAccountRoute = UserAccountImport.update({
+  id: '/account',
   path: '/account',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserStudentsIdRoute = UserStudentsIdImport.update({
+  id: '/students_/$id',
   path: '/students/$id',
   getParentRoute: () => UserRoute,
 } as any)
 
 const UserBillsMakeRoute = UserBillsMakeImport.update({
+  id: '/bills_/make',
   path: '/bills/make',
   getParentRoute: () => UserRoute,
 } as any)
@@ -160,15 +171,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserIndexImport
       parentRoute: typeof UserImport
     }
-    '/_user/bills/make': {
-      id: '/_user/bills/make'
+    '/_user/bills_/make': {
+      id: '/_user/bills_/make'
       path: '/bills/make'
       fullPath: '/bills/make'
       preLoaderRoute: typeof UserBillsMakeImport
       parentRoute: typeof UserImport
     }
-    '/_user/students/$id': {
-      id: '/_user/students/$id'
+    '/_user/students_/$id': {
+      id: '/_user/students_/$id'
       path: '/students/$id'
       fullPath: '/students/$id'
       preLoaderRoute: typeof UserStudentsIdImport
@@ -246,8 +257,8 @@ export interface FileRoutesById {
   '/_user/fees': typeof UserFeesRoute
   '/_user/students': typeof UserStudentsRoute
   '/_user/': typeof UserIndexRoute
-  '/_user/bills/make': typeof UserBillsMakeRoute
-  '/_user/students/$id': typeof UserStudentsIdRoute
+  '/_user/bills_/make': typeof UserBillsMakeRoute
+  '/_user/students_/$id': typeof UserStudentsIdRoute
 }
 
 export interface FileRouteTypes {
@@ -290,8 +301,8 @@ export interface FileRouteTypes {
     | '/_user/fees'
     | '/_user/students'
     | '/_user/'
-    | '/_user/bills/make'
-    | '/_user/students/$id'
+    | '/_user/bills_/make'
+    | '/_user/students_/$id'
   fileRoutesById: FileRoutesById
 }
 
@@ -334,8 +345,8 @@ export const routeTree = rootRoute
         "/_user/fees",
         "/_user/students",
         "/_user/",
-        "/_user/bills/make",
-        "/_user/students/$id"
+        "/_user/bills_/make",
+        "/_user/students_/$id"
       ]
     },
     "/login": {
@@ -372,11 +383,11 @@ export const routeTree = rootRoute
       "filePath": "_user/index.tsx",
       "parent": "/_user"
     },
-    "/_user/bills/make": {
+    "/_user/bills_/make": {
       "filePath": "_user/bills_.make.tsx",
       "parent": "/_user"
     },
-    "/_user/students/$id": {
+    "/_user/students_/$id": {
       "filePath": "_user/students_.$id.tsx",
       "parent": "/_user"
     }

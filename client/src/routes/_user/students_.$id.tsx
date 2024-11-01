@@ -5,7 +5,7 @@ import { StudentInfo } from '@/components/views/StudentInfo'
 import { useTitle } from '@/hooks/useTitle'
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_user/students/$id')({
+export const Route = createFileRoute('/_user/students_/$id')({
   component: StudentRouteComponent,
 })
 
