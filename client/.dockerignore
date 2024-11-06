@@ -1,0 +1,9 @@
+.dockerignore
+Dockerfile
+.env*
+vercel.json
+
+.vscode
+dist
+node_modules
+.vercel

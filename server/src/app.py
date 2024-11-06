@@ -48,21 +48,22 @@ def init_db(app: Flask) -> None:
         cert_content = getenv("DB_CERT")
         temp_cert_file_path = None
 
-        with tempfile.NamedTemporaryFile(delete=False) as temp_cert_file:
-            temp_cert_file.write(cert_content.encode())
-            temp_cert_file_path = temp_cert_file.name
+        if cert_content:
+            with tempfile.NamedTemporaryFile(delete=False) as temp_cert_file:
+                temp_cert_file.write(cert_content.encode())
+                temp_cert_file_path = temp_cert_file.name
 
-        app.config.update(
-            {
-                "SQLALCHEMY_ENGINE_OPTIONS": {
-                    "pool_recycle": 3600,
-                    "pool_pre_ping": True,
-                    "connect_args": {
-                        "ssl": {"ca": temp_cert_file_path, "ssl_version": 2}
-                    },
+            app.config.update(
+                {
+                    "SQLALCHEMY_ENGINE_OPTIONS": {
+                        "pool_recycle": 3600,
+                        "pool_pre_ping": True,
+                        "connect_args": {
+                            "ssl": {"ca": temp_cert_file_path, "ssl_version": 2}
+                        },
+                    }
                 }
-            }
-        )
+            )
 
         url = URL.create(
             "mysql+pymysql",

@@ -12,7 +12,7 @@
     "install:all": "concurrently \"yarn install:client\" \"yarn install:server\"",
     "build": "tsc api/client_server.local.ts",
     "run:client": "yarn build && node api/client_server.local.js",
-    "run:server": "cd server && poetry poe run-dev",
+    "run:server": "cd server && poetry shell && poetry poe run-dev",
     "run:all": "concurrently \"yarn run:client\" \"yarn run:server\""
   },
   "dependencies": {
