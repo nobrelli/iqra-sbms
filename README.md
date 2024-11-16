@@ -55,7 +55,7 @@ docker compose up --watch
 7. Open **CMD**
 8. Install **pipx**
 ```
-py -m pip install --user pipx`
+py -m pip install --user pipx
 ```
 9. Add **pipx** to PATH
 ```
